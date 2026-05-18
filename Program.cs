@@ -1,9 +1,12 @@
 using GymWorkout.API.Data;
 using Microsoft.EntityFrameworkCore;
+using GymWorkout.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Controllers
 builder.Services.AddControllers();
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -12,6 +15,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")
     ));
+
+// Services
+builder.Services.AddSingleton<UserService>();
 
 var app = builder.Build();
 
