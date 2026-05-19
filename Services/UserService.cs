@@ -1,47 +1,53 @@
 using BCrypt.Net;
+using GymWorkout.API.Data;
 using GymWorkout.API.DTOs.User;
 using GymWorkout.API.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace GymWorkout.API.Services;
 
 public class UserService
 {
-    private readonly List<User> users = new();
+    private readonly AppDbContext _context;
 
-    public List<User> GetUsers()
+    public UserService(AppDbContext context)
     {
-        return users;
+        _context = context;
     }
 
-    public User? GetUserById(int id)
+    public Task<List<User>> GetUsersAsync()
     {
-        return users.FirstOrDefault(u => u.Id == id);
+        return _context.Users.ToListAsync();
     }
 
-    public User? GetUserByEmail(string email)
+    public Task<User?> GetUserByIdAsync(int id)
     {
-        return users.FirstOrDefault(u => u.Email == email);
+        return _context.Users.FirstOrDefaultAsync(u => u.Id == id);
     }
 
-    public User CreateUser(CreateUserDto dto)
+    public Task<User?> GetUserByEmailAsync(string email)
+    {
+        return _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+    }
+
+    public async Task<User> CreateUserAsync(CreateUserDto dto)
     {
         var user = new User
         {
-            Id = users.Count + 1,
             Name = dto.Name,
             Email = dto.Email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password)
         };
 
-        users.Add(user);
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
 
         return user;
-}
+    }
 
-    public User? UpdateUser(int id, UpdateUserDto dto)
+    public async Task<User?> UpdateUserAsync(int id, UpdateUserDto dto)
     {
-        var existingUser = users.FirstOrDefault(u => u.Id == id);
-
+        var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
         if (existingUser == null)
         {
             return null;
@@ -50,21 +56,20 @@ public class UserService
         existingUser.Name = dto.Name;
         existingUser.Email = dto.Email;
 
+        await _context.SaveChangesAsync();
         return existingUser;
     }
 
-    public bool DeleteUser(int id)
+    public async Task<bool> DeleteUserAsync(int id)
     {
-        var user = users.FirstOrDefault(u => u.Id == id);
-
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
         if (user == null)
         {
             return false;
         }
 
-        users.Remove(user);
-
+        _context.Users.Remove(user);
+        await _context.SaveChangesAsync();
         return true;
     }
-
 }

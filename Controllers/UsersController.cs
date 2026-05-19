@@ -11,16 +11,16 @@ namespace GymWorkout.API.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly UserService _userService;
+
     public UsersController(UserService userService)
     {
         _userService = userService;
     }
 
-    // GET - listar usuários
     [HttpGet]
-    public IActionResult Get()
+    public async Task<IActionResult> Get()
     {
-        var userDtos = _userService.GetUsers()
+        var userDtos = (await _userService.GetUsersAsync())
             .Select(ToResponseDto)
             .ToList();
 
@@ -28,28 +28,28 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public IActionResult GetById(int id)
+    public async Task<IActionResult> GetById(int id)
     {
-        var user = _userService.GetUserById(id);
+        var user = await _userService.GetUserByIdAsync(id);
         if (user == null)
         {
             return NotFound();
         }
+
         return Ok(ToResponseDto(user));
     }
 
-    // POST - criar usuário
     [HttpPost]
-    public IActionResult Create(CreateUserDto dto)
+    public async Task<IActionResult> Create(CreateUserDto dto)
     {
-        var user = _userService.CreateUser(dto);
+        var user = await _userService.CreateUserAsync(dto);
         return Ok(ToResponseDto(user));
     }
 
     [HttpPut("{id}")]
-    public IActionResult Update(int id, UpdateUserDto dto)
+    public async Task<IActionResult> Update(int id, UpdateUserDto dto)
     {
-        var updatedUser = _userService.UpdateUser(id, dto);
+        var updatedUser = await _userService.UpdateUserAsync(id, dto);
 
         if (updatedUser == null)
         {
@@ -60,9 +60,9 @@ public class UsersController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var deleted = _userService.DeleteUser(id);
+        var deleted = await _userService.DeleteUserAsync(id);
 
         if (!deleted)
         {

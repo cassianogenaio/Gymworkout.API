@@ -17,7 +17,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     ));
 
 // Services
-builder.Services.AddSingleton<UserService>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<ExerciseService>();
+builder.Services.AddScoped<WorkoutService>();
+builder.Services.AddScoped<WorkoutExerciseService>();
 
 var app = builder.Build();
 
