@@ -1,4 +1,5 @@
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using GymWorkout.API.Entities;
 using GymWorkout.API.Services;
@@ -18,7 +19,8 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<List<UserResponseDto>>> Get()
     {
         var userDtos = (await _userService.GetUsersAsync())
             .Select(ToResponseDto)
@@ -28,7 +30,9 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<UserResponseDto>> GetById(int id)
     {
         var user = await _userService.GetUserByIdAsync(id);
         if (user == null)
@@ -40,14 +44,19 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(CreateUserDto dto)
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<UserResponseDto>> Create(CreateUserDto dto)
     {
         var user = await _userService.CreateUserAsync(dto);
-        return Ok(ToResponseDto(user));
+        return CreatedAtAction(nameof(GetById), new { id = user.Id }, ToResponseDto(user));
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, UpdateUserDto dto)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<UserResponseDto>> Update(int id, UpdateUserDto dto)
     {
         var updatedUser = await _userService.UpdateUserAsync(id, dto);
 
@@ -60,7 +69,9 @@ public class UsersController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> Delete(int id)
     {
         var deleted = await _userService.DeleteUserAsync(id);
 

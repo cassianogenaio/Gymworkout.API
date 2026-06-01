@@ -1,4 +1,5 @@
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using GymWorkout.API.Entities;
 using GymWorkout.API.Services;
@@ -18,7 +19,8 @@ public class ExercisesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<List<ExerciseResponseDto>>> Get()
     {
         var exerciseDtos = (await _exerciseService.GetExercisesAsync())
             .Select(ToResponseDto)
@@ -28,7 +30,9 @@ public class ExercisesController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ExerciseResponseDto>> GetById(int id)
     {
         var exercise = await _exerciseService.GetExerciseByIdAsync(id);
         if (exercise == null)
@@ -40,14 +44,19 @@ public class ExercisesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(CreateExerciseDto dto)
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<ExerciseResponseDto>> Create(CreateExerciseDto dto)
     {
         var exercise = await _exerciseService.CreateExerciseAsync(dto);
-        return Ok(ToResponseDto(exercise));
+        return CreatedAtAction(nameof(GetById), new { id = exercise.Id }, ToResponseDto(exercise));
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, UpdateExerciseDto dto)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ExerciseResponseDto>> Update(int id, UpdateExerciseDto dto)
     {
         var updatedExercise = await _exerciseService.UpdateExerciseAsync(id, dto);
 
@@ -60,7 +69,9 @@ public class ExercisesController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> Delete(int id)
     {
         var deleted = await _exerciseService.DeleteExerciseAsync(id);
 
