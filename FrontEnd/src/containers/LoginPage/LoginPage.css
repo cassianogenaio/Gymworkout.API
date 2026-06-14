@@ -1,0 +1,183 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+}
+
+.login-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("../../assets/img/GymBackground.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(2px) brightness(0.75);
+  transform: scale(1.03);
+  z-index: 0;
+}
+
+.login-container {
+  background: Transparent;
+  padding: 50px 40px 50px 40px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(40px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  z-index: 1;
+}
+
+.login-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.Title-login {
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.login-container .input-group {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  margin: 5px 0px 12px 0px;
+  gap: 20px;
+}
+
+.login-page .input-box {
+  position: relative;
+}
+
+.login-page .input-box input {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  border: 2px solid #e0e0e0;
+  outline: none;
+  border-radius: 10px;
+  font-size: 15px;
+  padding: 10px 44px 10px 20px;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+  color: #d1c6c6;
+}
+
+.login-page .input-box input::placeholder {
+  color: #999;
+}
+
+.login-page .input-box input:focus {
+  border-color: #9b9ea3;
+  box-shadow: 0 0 0 3px rgba(27, 27, 29, 0.1);
+}
+
+.login-page .password-toggle {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  font-size: 18px;
+  padding: 0 6px;
+}
+
+.login-page .password-toggle:focus {
+  outline: none;
+}
+
+.login-container .btn-login {
+  width: 100%;
+  padding: 12px;
+  background-color: #ffffff;
+  color: #000000;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
+}
+
+.login-container .btn-login:hover {
+  background-color: #c3c6cc;
+  transform: translateY(-2px);
+}
+
+.login-container .btn-login:active {
+  transform: translateY(0);
+}
+
+.register-link {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #949393;
+}
+
+.register-link a {
+  color: #999a9b;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.register-link a:hover {
+  color: #e6e6e6;
+  text-decoration: underline;
+}
+
+.remember-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #666;
+}
+
+.remember-box input[type="checkbox"] {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}
+
+.remember-box label {
+  cursor: pointer;
+}

@@ -1,0 +1,158 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+.register-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+}
+
+.register-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("../../assets/img/GymBackground.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(2px) brightness(0.75);
+  transform: scale(1.03);
+  z-index: 0;
+}
+
+.register-container {
+  background: Transparent;
+  padding: 50px 40px 50px 40px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(40px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  z-index: 1;
+}
+
+.register-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.Title-register {
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.register-container .input-group {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  margin: 5px 0px 12px 0px;
+  gap: 20px;
+}
+
+.register-page .input-box input {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  border: 2px solid #e0e0e0;
+  outline: none;
+  border-radius: 10px;
+  font-size: 15px;
+  padding: 10px 20px;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+  color: #d1c6c6;
+}
+
+.register-page .input-box input::placeholder {
+  color: #999;
+}
+
+.register-page .input-box input:focus {
+  border-color: #c3c6cc;
+  box-shadow: 0 0 0 3px rgba(27, 27, 29, 0.1);
+}
+
+.register-container .btn-register {
+  width: 100%;
+  padding: 12px;
+  background-color: #ffffff;
+  color: #000000;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
+}
+
+.register-container .btn-register:hover {
+  background-color: #c3c6cc;
+  transform: translateY(-2px);
+}
+
+.register-container .btn-register:active {
+  transform: translateY(0);
+}
+
+.login-link {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #949393;
+}
+
+.login-link a {
+  color: #999a9b;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.login-link a:hover {
+  color: #e6e6e6;
+  text-decoration: underline;
+}
+
+.remember-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #666;
+}
+
+.remember-box input[type="checkbox"] {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}
+
+.remember-box label {
+  cursor: pointer;
+}
