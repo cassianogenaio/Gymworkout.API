@@ -1,12 +1,14 @@
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using GymWorkout.API.Entities;
 using GymWorkout.API.Services;
 using GymWorkout.API.DTOs.Workout;
 
 namespace GymWorkout.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class WorkoutsController : ControllerBase

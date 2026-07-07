@@ -1,9 +1,8 @@
-using System.Linq;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using GymWorkout.API.Entities;
 using GymWorkout.API.Services;
 using GymWorkout.API.DTOs.User;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GymWorkout.API.Controllers;
 
