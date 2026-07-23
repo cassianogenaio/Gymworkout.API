@@ -1,17 +1,23 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import LoginPage from "./containers/LoginPage/LoginPage";
-import RegisterPage from "./containers/RegisterPage/RegisterPage";
-import ProfilePage from "./containers/ProfilePage/ProfilePage";
+import { Suspense, lazy } from "react";
+
+const LoginPage = lazy(() => import("./containers/LoginPage/LoginPage"));
+const RegisterPage = lazy(() => import("./containers/RegisterPage/RegisterPage"));
+const ProfilePage = lazy(() => import("./containers/ProfilePage/ProfilePage"));
+const HomePage = lazy(() => import("./containers/HomePage/HomePage"));
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/" element={<Navigate to="/login" />} />
-      </Routes>
+      <Suspense fallback={<div>Carregando...</div>}>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/" element={<Navigate to="/home" />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }
