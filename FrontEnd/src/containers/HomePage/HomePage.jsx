@@ -85,7 +85,7 @@ function HomePage() {
 
           <article className="workout-card workout-card--new">
             <button className="workout-card__new-workout">
-              <Plus size={16} /> Criar treino
+              <Plus size={16} to="/create-workout" /> Criar treino
             </button>
           </article>
         </div>

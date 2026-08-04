@@ -27,15 +27,26 @@ public class UserService
 
     public Task<User?> GetUserByEmailAsync(string email)
     {
-        return _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        var normalized = email?.Trim().ToLowerInvariant() ?? string.Empty;
+        return _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == normalized);
     }
 
-    public async Task<User> CreateUserAsync(CreateUserDto dto)
+    public async Task<User?> CreateUserAsync(CreateUserDto dto)
     {
+        var normalizedEmail = dto.Email.Trim().ToLowerInvariant();
+        var emailExists = await _context.Users
+            .AsNoTracking()
+            .AnyAsync(u => u.Email.ToLower() == normalizedEmail);
+
+        if (emailExists)
+        {
+            return null;
+        }
+
         var user = new User
         {
             Name = dto.Name,
-            Email = dto.Email,
+            Email = normalizedEmail,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password)
         };
 

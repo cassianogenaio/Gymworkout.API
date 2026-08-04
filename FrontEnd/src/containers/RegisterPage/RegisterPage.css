@@ -156,3 +156,10 @@ body,
 .remember-box label {
   cursor: pointer;
 }
+
+.form-error {
+  color: #ff4d4f;
+  font-size: 12px;
+  margin-top: -10px;
+  margin-bottom: 10px;
+}

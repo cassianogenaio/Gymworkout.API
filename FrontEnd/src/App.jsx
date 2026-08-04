@@ -5,6 +5,7 @@ const LoginPage = lazy(() => import("./containers/LoginPage/LoginPage"));
 const RegisterPage = lazy(() => import("./containers/RegisterPage/RegisterPage"));
 const ProfilePage = lazy(() => import("./containers/ProfilePage/ProfilePage"));
 const HomePage = lazy(() => import("./containers/HomePage/HomePage"));
+const CreateWorkoutPage = lazy(() => import("./containers/CreateWorkoutPage/CreateWorkoutPage"));
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/home" element={<HomePage />} />
+          <Route path="/create-workout" element={<CreateWorkoutPage />} />
           <Route path="/" element={<Navigate to="/home" />} />
         </Routes>
       </Suspense>

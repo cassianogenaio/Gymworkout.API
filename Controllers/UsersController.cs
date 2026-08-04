@@ -48,6 +48,11 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<UserResponseDto>> Create(CreateUserDto dto)
     {
         var user = await _userService.CreateUserAsync(dto);
+        if (user == null)
+        {
+            return BadRequest("Email já existe. Use outro endereço ou faça login.");
+        }
+
         return CreatedAtAction(nameof(GetById), new { id = user.Id }, ToResponseDto(user));
     }
 
