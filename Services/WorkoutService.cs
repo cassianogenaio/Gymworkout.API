@@ -14,10 +14,11 @@ public class WorkoutService
         _context = context;
     }
 
-    public Task<List<Workout>> GetWorkoutsAsync()
+    public Task<List<Workout>> GetWorkoutsAsync(int userId)
     {
         return _context.Workouts
             .Include(w => w.WorkoutExercises)
+            .Where(w => w.UserId == userId)
             .ToListAsync();
     }
 

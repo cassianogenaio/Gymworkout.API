@@ -33,4 +33,18 @@ export async function register(name, email, password) {
   return data?.Token ?? data?.token;
 }
 
-export default { login, register };
+export function getUserId() {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    return null;
+  }
+
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return Number(payload.nameid || payload.sub) || null;
+  } catch {
+    return null;
+  }
+}
+
+export default { login, register, getUserId };

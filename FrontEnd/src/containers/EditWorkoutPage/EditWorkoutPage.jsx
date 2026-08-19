@@ -1,17 +1,17 @@
 import React from "react";
-import "./CreateWorkoutPage.css";
+import "./EditWorkoutPage.css";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
 
-function CreateWorkoutPage() {
+function EditWorkoutPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="create-workout-page">
-      <div className="create-workout-container">
-        <h1 className="Title-create-workout">Create Workout</h1>
-        <form className="create-workout-form">
+    <div className="edit-workout-page">
+      <div className="edit-workout-container">
+        <h1 className="Title-edit-workout">Edit Workout</h1>
+        <form className="edit-workout-form">
           <Input type="text" id="workoutName" placeholder="Workout Name" />
 
           <div className="exercises-group">
@@ -34,11 +34,11 @@ function CreateWorkoutPage() {
             + Adicionar exercício
           </button>
 
-          <Button type="submit">Create Workout</Button>
+          <Button type="submit">Edit Workout</Button>
         </form>
       </div>
     </div>
   );
 }
 
-export default CreateWorkoutPage;
+export default EditWorkoutPage;

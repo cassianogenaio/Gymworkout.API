@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using GymWorkout.API.Entities;
 using GymWorkout.API.Services;
 using GymWorkout.API.DTOs.Workout;
+using System.Security.Claims;
 
 namespace GymWorkout.API.Controllers;
 
@@ -24,7 +25,13 @@ public class WorkoutsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<List<WorkoutResponseDto>>> Get()
     {
-        var workoutDtos = (await _workoutService.GetWorkoutsAsync())
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!int.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized();
+        }
+
+        var workoutDtos = (await _workoutService.GetWorkoutsAsync(userId))
             .Select(ToResponseDto)
             .ToList();
 

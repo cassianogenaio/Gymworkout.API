@@ -20,7 +20,7 @@ public class UsersController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<List<UserResponseDto>>> Get()
-    {
+{
         var userDtos = (await _userService.GetUsersAsync())
             .Select(ToResponseDto)
             .ToList();
