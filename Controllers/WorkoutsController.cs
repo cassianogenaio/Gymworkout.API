@@ -31,7 +31,24 @@ public class WorkoutsController : ControllerBase
             return Unauthorized();
         }
 
-        var workoutDtos = (await _workoutService.GetWorkoutsAsync(userId))
+        var workouts = User.IsInRole("Admin")
+            ? await _workoutService.GetAllWorkoutsAsync()
+            : await _workoutService.GetWorkoutsAsync(userId);
+
+        var workoutDtos = workouts
+            .Select(ToResponseDto)
+            .ToList();
+
+        return Ok(workoutDtos);
+    }
+
+    [HttpGet("all")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<List<WorkoutResponseDto>>> GetAll()
+    {
+        var workoutDtos = (await _workoutService.GetAllWorkoutsAsync())
             .Select(ToResponseDto)
             .ToList();
 
@@ -57,6 +74,13 @@ public class WorkoutsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<WorkoutResponseDto>> Create(CreateWorkoutDto dto)
     {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!int.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized();
+        }
+
+        dto.UserId = userId;
         var workout = await _workoutService.CreateWorkoutAsync(dto);
         return CreatedAtAction(nameof(GetById), new { id = workout.Id }, ToResponseDto(workout));
     }
@@ -67,7 +91,14 @@ public class WorkoutsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<WorkoutResponseDto>> Update(int id, UpdateWorkoutDto dto)
     {
-        var updatedWorkout = await _workoutService.UpdateWorkoutAsync(id, dto);
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!int.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized();
+        }
+
+        dto.UserId = userId;
+        var updatedWorkout = await _workoutService.UpdateWorkoutAsync(id, dto, userId);
         if (updatedWorkout == null)
         {
             return NotFound();
@@ -103,6 +134,7 @@ public class WorkoutsController : ControllerBase
                     Id = we.Id,
                     WorkoutId = we.WorkoutId,
                     ExerciseId = we.ExerciseId,
+                    ExerciseName = we.Exercise.Name,
                     Sets = we.Sets,
                     Reps = we.Reps,
                     RestTimeSeconds = we.RestTimeSeconds

@@ -43,13 +43,20 @@ public class AuthService
 
     public string GenerateToken(User user)
     {
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Email, user.Email)
+        };
+
+        if (string.Equals(user.Email, _configuration["Jwt:AdminEmail"], StringComparison.OrdinalIgnoreCase))
+        {
+            claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+        }
+
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new Claim[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email)
-            }),
+            Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddMinutes(
                 double.Parse(_configuration["Jwt:ExpirationMinutes"]!)),
             SigningCredentials = new SigningCredentials(

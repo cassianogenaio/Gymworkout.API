@@ -1,6 +1,7 @@
 :root {
   --neutral-100: #f5f5f5;
   --neutral-200: #e5e5e5;
+  --neutral-300: #d4d4d4;
   --neutral-400: #a3a3a3;
   --neutral-500: #737373;
   --neutral-700: #404040;
@@ -8,8 +9,15 @@
   --neutral-900: #171717;
   --neutral-950: #0a0a0a;
 
+  --accent-800: #065f46; /* emerald-800 */
+  --accent-700: #047857; /* emerald-700 */
+  --accent-600: #059669; /* emerald-600 */
   --accent-500: #10b981; /* emerald-500 */
   --accent-400: #34d399; /* emerald-400 */
+  --accent-300: #6ee7b7; /* emerald-300 */
+  --accent-200: #a7f3d0; /* emerald-200 */
+  --accent-100: #d1fae5; /* emerald-100 */
+  --accent-soft: rgba(16, 185, 129, 0.14);
 }
 
 *,
@@ -47,13 +55,13 @@ body,
   margin-bottom: 1.5rem;
 }
 
-.home-page__topbar h1 {
+.home-page .home-page__topbar h1 {
   font-size: 1.25rem;
   font-weight: 600;
   margin: 0;
 }
 
-.home-page__topbar p {
+.home-page .home-page__topbar p {
   font-size: 0.875rem;
   color: var(--neutral-400);
   margin: 0.25rem 0 0;
@@ -86,44 +94,44 @@ body,
 
 /* Workout card (bloco próprio, reaproveitável) */
 
-.workout-card {
+.home-page .workout-card {
   background-color: var(--neutral-900);
   border: 1px solid var(--neutral-800);
   border-radius: 1rem;
   overflow: hidden;
 }
 
-.workout-card--expanded {
+.home-page .workout-card--expanded {
   border-color: var(--neutral-700);
 }
 
-.workout-card__header {
+.home-page .workout-card__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.25rem;
 }
 
-.workout-card__title {
+.home-page .workout-card__title {
   font-size: 0.875rem;
   font-weight: 600;
   margin: 0;
 }
 
-.workout-card__subtitle {
+.home-page .workout-card__subtitle {
   display: block;
   font-size: 0.75rem;
   color: var(--neutral-400);
   margin-top: 0.25rem;
 }
 
-.workout-card__actions {
+.home-page .workout-card__actions {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-.workout-card__edit-button {
+.home-page .workout-card__edit-button {
   display: flex;
   align-items: center;
   gap: 0.375rem;
@@ -136,11 +144,11 @@ body,
   transition: color 0.15s ease;
 }
 
-.workout-card__edit-button:hover {
+.home-page .workout-card__edit-button:hover {
   color: var(--neutral-100);
 }
 
-.workout-card__toggle-button {
+.home-page .workout-card__toggle-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -152,11 +160,11 @@ body,
   transition: transform 0.15s ease;
 }
 
-.workout-card--expanded .workout-card__toggle-button {
+.home-page .workout-card--expanded .workout-card__toggle-button {
   transform: rotate(180deg);
 }
 
-.workout-card__exercises {
+.home-page .workout-card__exercises {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -165,13 +173,13 @@ body,
 
 /* Estado vazio / novo treino */
 
-.workout-card--new {
+.home-page .workout-card--new {
   border-style: dashed;
   border-color: var(--neutral-700);
   background-color: transparent;
 }
 
-.workout-card__new-workout {
+.home-page .workout-card__new-workout {
   width: 100%;
   display: flex;
   align-items: center;
@@ -186,13 +194,13 @@ body,
   transition: color 0.15s ease;
 }
 
-.workout-card__new-workout:hover {
+.home-page .workout-card__new-workout:hover {
   color: var(--neutral-200);
 }
 
 /* Exercise item (elemento do exercicio dentro do card expandido) */
 
-.exercise-item {
+.home-page .exercise-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -202,29 +210,29 @@ body,
   padding: 0.625rem 0.75rem;
 }
 
-.exercise-item__info {
+.home-page .exercise-item__info {
   display: flex;
   align-items: center;
   gap: 0.625rem;
 }
 
-.exercise-item__info p {
+.home-page .exercise-item__info p {
   font-size: 0.875rem;
   margin: 0;
 }
 
-.exercise-item__icon {
+.home-page .exercise-item__icon {
   display: flex;
   align-items: center;
   color: var(--neutral-500);
 }
 
-.exercise-item__meta {
+.home-page .exercise-item__meta {
   font-size: 0.75rem;
   color: var(--neutral-400);
 }
 
-.popup-overlay {
+.home-page .popup-overlay {
   position: fixed;
   inset: 0;
   display: flex;
@@ -235,7 +243,7 @@ body,
   z-index: 1000;
 }
 
-.popup {
+.home-page .popup {
   width: min(90vw, 18rem);
   background-color: var(--neutral-900);
   border: 1px solid var(--neutral-700);
@@ -243,30 +251,30 @@ body,
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
 }
 
-.popup-content {
+.home-page .popup-content {
   padding: 1.5rem 1.25rem 1rem;
 }
 
-.popup-content h2 {
+.home-page .popup-content h2 {
   margin: 0 0 0.5rem;
   font-size: 1.25rem;
   color: var(--neutral-100);
 }
 
-.popup-content p {
+.home-page .popup-content p {
   margin: 0;
   color: var(--neutral-400);
   font-size: 0.875rem;
 }
 
-.popup-buttons {
+.home-page .popup-buttons {
   display: flex;
   justify-content: space-between;
   gap: 0.75rem;
   margin-top: 2rem;
 }
 
-.popup-button {
+.home-page .popup-button {
   border: 1px solid var(--neutral-700);
   background: transparent;
   color: var(--neutral-200);
@@ -277,13 +285,13 @@ body,
   cursor: pointer;
 }
 
-.popup-button--primary {
+.home-page .popup-button--primary {
   background-color: var(--accent-500);
   border-color: var(--accent-500);
   color: var(--neutral-950);
 }
 
-.input-popup {
+.home-page .input-popup {
   width: 100%;
   padding: 0.5rem;
   margin-top: 1.2rem;
@@ -291,4 +299,13 @@ body,
   border-radius: 0.5rem;
   background-color: var(--neutral-800);
   color: var(--neutral-100);
+}
+
+.home-page .ChevroDown {
+  transition: 0.5s ease-out;
+}
+
+.home-page .ChevroDown:hover { 
+  color: #5c5c5c;
+  transform: rotate(180deg);
 }

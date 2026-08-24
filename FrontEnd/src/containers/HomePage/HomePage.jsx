@@ -1,17 +1,19 @@
 import "./HomePage.css";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Plus, Pencil, Dumbbell, ChevronDown } from "lucide-react";
 import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input";
 import React, { useEffect, useState } from 'react';
 import * as authService from "../../services/authService";
 import * as workoutService from "../../services/workoutService";
+import * as workoutExercisesService from "../../services/workoutExercisesService";
 
 function HomePage() {
   const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState("");
   const [name, setName] = useState("");
   const [workouts, setWorkouts] = useState([]);
+  const navigate = useNavigate();
 
   const openPopUp = (id_user) => {
     setIsOpen(true);
@@ -19,17 +21,20 @@ function HomePage() {
 
   const closePopUp = () => {
       setIsOpen(false);
+  }
+
+  const loadWorkouts = async () => {
+    try {
+      setWorkouts(await workoutService.getAll());
+    } catch (requestError) {
+      setError(requestError.message);
     }
+  };
 
   useEffect(() => {
-    const loadWorkouts = async () => {
-      try {
-        setWorkouts(await workoutService.getAll());
-      } catch (requestError) {
-        setError(requestError.message);
-      }
-    };
-    loadWorkouts();
+    workoutService.getAll()
+      .then((loadedWorkouts) => setWorkouts(loadedWorkouts))
+      .catch((requestError) => setError(requestError.message));
   }, []);
 
   const handleCreateWorkout = async (e) => {
@@ -42,8 +47,8 @@ function HomePage() {
         throw new Error("Sessão inválida. Faça login novamente.");
       }
 
-      const createdWorkout = await workoutService.create(name, userId);
-      setWorkouts((currentWorkouts) => [...currentWorkouts, createdWorkout]);
+      await workoutService.create(name, userId);
+      await loadWorkouts();
       setName("");
       closePopUp();
 
@@ -52,6 +57,10 @@ function HomePage() {
     }
   };
 
+  const PageEdit = (id_workout) => {
+    navigate(`/edit-workout/${id_workout}`);
+  }
+
   return (
     <div className="home-page">
       <div className="home-page__container">
@@ -59,6 +68,7 @@ function HomePage() {
           <div>
             <h1>Meus treinos</h1>
             <p>{workouts.length} {workouts.length === 1 ? "treino criado" : "treinos criados"}</p>
+            {error && <p role="alert">{error}</p>}
           </div>
         </div>
 
@@ -73,44 +83,32 @@ function HomePage() {
                 </span>
               </div>
               <div className="workout-card__actions">
-                <button className="workout-card__edit-button">
+                <button className="workout-card__edit-button" onClick={() => { PageEdit(workout.id) }}>
                   <Pencil size={14}/> Editar
                 </button>
                 <button className="workout-card__toggle-button">
-                  <ChevronDown size={18} />
+                  <ChevronDown size={18} className="ChevroDown Up"/>
                 </button>
               </div>
             </div>
 
             {/* Expansão do card  */}
             <div className="workout-card__exercises">
-              <div className="exercise-item">
-                <div className="exercise-item__info">
-                  <span className="exercise-item__icon">
-                    <Dumbbell size={14} />
-                  </span>
-                  <p>Agachamento livre</p>
+              {workout.workoutExercises?.map((exercise) => (
+                <div className="exercise-item" key={exercise.id}>
+                  <div className="exercise-item__info">
+                    <span className="exercise-item__icon">
+                      <Dumbbell size={14} />
+                    </span>
+
+                    <p>{exercise.exerciseName}</p>
+                  </div>
+
+                  <span className="exercise-item__meta">{exercise.sets}x{exercise.reps} · {exercise.restTimeSeconds}s</span>
                 </div>
-                <span className="exercise-item__meta">4x10 · 90s</span>
-              </div>
-              <div className="exercise-item">
-                <div className="exercise-item__info">
-                  <span className="exercise-item__icon">
-                    <Dumbbell size={14} />
-                  </span>
-                </div>
-                <span className="exercise-item__meta">3x12 · 60s</span>
-              </div>
-              <div className="exercise-item">
-                <div className="exercise-item__info">
-                  <span className="exercise-item__icon">
-                    <Dumbbell size={14} />
-                  </span>
-                  <p>Cadeira extensora</p>
-                </div>
-                <span className="exercise-item__meta">3x15 · 45s</span>
-              </div>
+              ))}
             </div>
+            
           </article>
           ))}
 

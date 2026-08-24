@@ -18,7 +18,16 @@ public class WorkoutService
     {
         return _context.Workouts
             .Include(w => w.WorkoutExercises)
+                .ThenInclude(we => we.Exercise)
             .Where(w => w.UserId == userId)
+            .ToListAsync();
+    }
+
+    public Task<List<Workout>> GetAllWorkoutsAsync()
+    {
+        return _context.Workouts
+            .Include(w => w.WorkoutExercises)
+                .ThenInclude(we => we.Exercise)
             .ToListAsync();
     }
 
@@ -26,6 +35,7 @@ public class WorkoutService
     {
         return _context.Workouts
             .Include(w => w.WorkoutExercises)
+                .ThenInclude(we => we.Exercise)
             .FirstOrDefaultAsync(w => w.Id == id);
     }
 
@@ -44,9 +54,10 @@ public class WorkoutService
         return workout;
     }
 
-    public async Task<Workout?> UpdateWorkoutAsync(int id, UpdateWorkoutDto dto)
+    public async Task<Workout?> UpdateWorkoutAsync(int id, UpdateWorkoutDto dto, int userId)
     {
-        var existingWorkout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == id);
+        var existingWorkout = await _context.Workouts
+            .FirstOrDefaultAsync(w => w.Id == id && w.UserId == userId);
         if (existingWorkout == null)
         {
             return null;

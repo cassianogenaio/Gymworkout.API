@@ -16,7 +16,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/home" element={<HomePage />} />
-          <Route path="/edit-workout" element={<EditWorkoutPage />} />
+          <Route path="/edit-workout/:id" element={<EditWorkoutPage />} />
           <Route path="/" element={<Navigate to="/home" />} />
         </Routes>
       </Suspense>

@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5011";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5011"; 
 
 async function request(path, options = {}) {
   const token = localStorage.getItem("token");
@@ -27,30 +27,13 @@ async function request(path, options = {}) {
   return response.status === 204 ? null : response.json();
 }
 
-export function getAll() {
-  return request("/Workouts");
-}
-
-export function getById(id) {
-  return request(`/Workouts/${id}`);
-}
-
-export function create(name, userId) {
-  return request("/Workouts", {
+export function create(workoutId, exerciseId, sets, reps, restTimeSeconds) {
+  return request("/WorkoutExercises", {
     method: "POST",
-    body: JSON.stringify({ name, userId }),
-  });
-}
-
-export function update(id, name, userId) {
-  return request(`/Workouts/${id}`, {
-    method: "PUT",
-    body: JSON.stringify({ name, userId }),
+    body: JSON.stringify({ workoutId, exerciseId, sets, reps, restTimeSeconds }),
   });
 }
 
 export function remove(id) {
-  return request(`/Workouts/${id}`, { method: "DELETE" });
+  return request(`/WorkoutExercises/${id}`, { method: "DELETE" });
 }
-
-export default { getAll, getById, create, update, remove };

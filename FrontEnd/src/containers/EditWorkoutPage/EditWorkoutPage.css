@@ -1,3 +1,11 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+
 :root {
   --neutral-100: #f5f5f5;
   --neutral-200: #e5e5e5;
@@ -9,8 +17,15 @@
   --neutral-900: #171717;
   --neutral-950: #0a0a0a;
 
+  --accent-800: #065f46; /* emerald-800 */
+  --accent-700: #047857; /* emerald-700 */
+  --accent-600: #059669; /* emerald-600 */
   --accent-500: #10b981; /* emerald-500 */
   --accent-400: #34d399; /* emerald-400 */
+  --accent-300: #6ee7b7; /* emerald-300 */
+  --accent-200: #a7f3d0; /* emerald-200 */
+  --accent-100: #d1fae5; /* emerald-100 */
+  --accent-soft: rgba(16, 185, 129, 0.14);
 }
 
 *,
@@ -63,4 +78,214 @@ select {
   color: var(--neutral-300);
   background-color: var(--neutral-500); 
   border: 1px solid var(--neutral-700);
+}
+
+.popup-delete-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(2px);
+  z-index: 1000;
+}
+
+.popup-delete{
+  width: min(90vw, 20rem);
+  background-color: var(--neutral-900);
+  border: 1px solid var(--neutral-700);
+  border-radius: 1rem;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+/* Tiver que separar esse de cima com o debaixo poís não estava funcionando */
+
+.popup-add {
+  width: min(90vw, 20rem);
+  background-color: var(--neutral-900);
+  border: 1px solid var(--neutral-700);
+  border-radius: 1rem;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+.popup-add-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(2px);
+  z-index: 1000;
+}
+
+.popup-add-exercise {
+  width: min(90vw, 28rem);
+}
+
+.popup-delete-content {
+  padding: 1.5rem 1.25rem 1rem;
+}
+
+.popup-add-content {
+  padding: 1.5rem 1.25rem 1rem;
+}
+
+.popup-delete-content h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+  color: var(--neutral-100);
+}
+
+.popup-delete-content p {
+  margin: 15px 0px 0px;
+  color: var(--neutral-400);
+  font-size: 0.875rem;
+}
+
+.popup-delete-content label {
+  display: block;
+  margin-top: 0.9rem;
+  color: var(--neutral-200);
+  font-size: 0.875rem;
+}
+
+.popup-delete-content label input,
+.popup-delete-content label select {
+  margin: 0.35rem 0 0;
+  background-color: var(--neutral-800);
+  color: var(--neutral-100);
+}
+
+.popup-add-content label {
+  display: block;
+  margin-top: 0.9rem;
+  color: var(--neutral-200);
+  font-size: 0.875rem;
+}
+
+.popup-add-content label input,
+.popup-add-content label select {
+  margin: 0.35rem 0 0;
+  background-color: var(--neutral-800);
+  color: var(--neutral-100);
+}
+
+.exercise-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.popup-delete-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.popup-add-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.popup-delete-button {
+  border: 1px solid var(--neutral-700);
+  background: transparent;
+  color: var(--neutral-200);
+  border-radius: 0.625rem;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.popup-delete-button--primary {
+  background-color: #7f1d1d;
+  border: 1px solid #991b1b;
+  color: var(--neutral-100);
+}
+
+.popup-delete-button--primary:hover {
+  background-color: #450a0a;
+}
+
+.popup-add-button {
+  border: 1px solid var(--neutral-700);
+  background: transparent;
+  color: var(--neutral-200);
+  border-radius: 0.625rem;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.popup-add-button--primary {
+  background-color: var(--accent-500);
+  border-color: var(--accent-400);
+  color: var(--neutral-950);
+}
+
+.popup-add-button--primary:hover {
+  background-color: var(--accent-700);
+  border-color: var(--accent-300);
+  color: var(--neutral-950);
+}
+
+.input-popup-delete {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 1.2rem;
+  border: 1px solid var(--neutral-700);
+  border-radius: 0.5rem;
+  background-color: var(--neutral-800);
+  color: var(--neutral-100);
+}
+
+/* .edit-workout-page .exercises-group {} */
+
+.edit-workout-page .exercise-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--neutral-950);
+  border: 1px solid var(--neutral-800);
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.75rem;
+}
+
+.remove-exercise-btn {
+  border: 1px solid var(--neutral-700);
+  background: red;
+  color: var(--neutral-200);
+  border-radius: 0.625rem;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.3 ease-out;
+}
+
+.remove-exercise-btn:hover {
+  background-color: rgb(122, 0, 0);
+  transform: translateY(-1px);
+}
+
+.delete-workout-btn {
+  border: 1px solid #991b1b;
+  background: #7f1d1d;
+  color: var(--neutral-100);
+  border-radius: 0.625rem;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.delete-workout-btn:hover {
+  background-color: #450a0a;
 }
