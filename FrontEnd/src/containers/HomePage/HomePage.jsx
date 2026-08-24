@@ -98,7 +98,6 @@ function HomePage() {
                   <span className="exercise-item__icon">
                     <Dumbbell size={14} />
                   </span>
-                  <p>Leg press 45</p>
                 </div>
                 <span className="exercise-item__meta">3x12 · 60s</span>
               </div>
