@@ -194,8 +194,10 @@ body,
   transition: color 0.15s ease;
 }
 
-.home-page .workout-card__new-workout:hover {
-  color: var(--neutral-200);
+.home-page .workout-card__new-workout:hover, 
+.workout-card--new:hover {
+  border-color: var(--accent-700);
+  color: var(--accent-300);
 }
 
 /* Exercise item (elemento do exercicio dentro do card expandido) */

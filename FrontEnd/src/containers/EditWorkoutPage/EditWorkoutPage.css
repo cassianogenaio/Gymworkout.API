@@ -69,6 +69,31 @@ body,
   align-items: center;
 }
 
+.exercises-group {
+  width: 100%;
+}
+
+.add-exercise-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.25rem;
+  border: 1px dashed var(--neutral-700);
+  border-radius: 1rem;
+  background: transparent;
+  color: var(--neutral-400);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.add-exercise-btn:hover {
+  border-color: var(--accent-700);
+  color: var(--accent-300);
+}
+
 input,
 select {
   width: 100%;
@@ -247,33 +272,6 @@ select {
 }
 
 /* .edit-workout-page .exercises-group {} */
-
-.edit-workout-page .exercise-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: var(--neutral-950);
-  border: 1px solid var(--neutral-800);
-  border-radius: 0.5rem;
-  padding: 0.625rem 0.75rem;
-}
-
-.remove-exercise-btn {
-  border: 1px solid var(--neutral-700);
-  background: red;
-  color: var(--neutral-200);
-  border-radius: 0.625rem;
-  padding: 0.625rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: 0.3 ease-out;
-}
-
-.remove-exercise-btn:hover {
-  background-color: rgb(122, 0, 0);
-  transform: translateY(-1px);
-}
 
 .delete-workout-btn {
   border: 1px solid #991b1b;

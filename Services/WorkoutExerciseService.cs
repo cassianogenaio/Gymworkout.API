@@ -16,12 +16,31 @@ public class WorkoutExerciseService
 
     public Task<List<WorkoutExercise>> GetWorkoutExercisesAsync()
     {
-        return _context.WorkoutExercises.ToListAsync();
+        return _context.WorkoutExercises
+            .Include(we => we.Workout)
+            .ToListAsync();
+    }
+
+    public Task<List<WorkoutExercise>> GetWorkoutExercisesByUserAsync(int userId)
+    {
+        return _context.WorkoutExercises
+            .Include(we => we.Workout)
+            .Where(we => we.Workout.UserId == userId)
+            .ToListAsync();
+    }
+
+    public Task<List<WorkoutExercise>> GetAllWorkoutsAsync()
+    {
+        return _context.WorkoutExercises
+            .Include(we => we.Workout)
+            .ToListAsync();
     }
 
     public Task<WorkoutExercise?> GetWorkoutExerciseByIdAsync(int id)
     {
-        return _context.WorkoutExercises.FirstOrDefaultAsync(we => we.Id == id);
+        return _context.WorkoutExercises
+            .Include(we => we.Workout)
+            .FirstOrDefaultAsync(we => we.Id == id);
     }
 
     public async Task<WorkoutExercise> CreateWorkoutExerciseAsync(CreateWorkoutExerciseDto dto)

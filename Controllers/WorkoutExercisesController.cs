@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using GymWorkout.API.Entities;
 using GymWorkout.API.Services;
 using GymWorkout.API.DTOs.WorkoutExercise;
+using System.Security.Claims;
 
 namespace GymWorkout.API.Controllers;
 
@@ -14,21 +15,47 @@ namespace GymWorkout.API.Controllers;
 public class WorkoutExercisesController : ControllerBase
 {
     private readonly WorkoutExerciseService _workoutExerciseService;
+    private readonly WorkoutService _workoutService;
 
-    public WorkoutExercisesController(WorkoutExerciseService workoutExerciseService)
+    public WorkoutExercisesController(
+        WorkoutExerciseService workoutExerciseService,
+        WorkoutService workoutService)
     {
         _workoutExerciseService = workoutExerciseService;
+        _workoutService = workoutService;
     }
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<List<WorkoutExerciseResponseDto>>> Get()
     {
-        var dtos = (await _workoutExerciseService.GetWorkoutExercisesAsync())
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!int.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized();
+        }
+
+        var workoutExercises = await _workoutExerciseService.GetWorkoutExercisesByUserAsync(userId);
+
+        var dtos = workoutExercises
             .Select(ToResponseDto)
             .ToList();
 
         return Ok(dtos);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("admin/all")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<List<WorkoutExerciseResponseDto>>> GetAll()
+    {
+        
+        var workoutDtos = (await _workoutExerciseService.GetAllWorkoutsAsync())
+            .Select(ToResponseDto)
+            .ToList();
+
+        return Ok(workoutDtos);
     }
 
     [HttpGet("{id}")]
@@ -36,12 +63,25 @@ public class WorkoutExercisesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<WorkoutExerciseResponseDto>> GetById(int id)
     {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!int.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized();
+        }
+
         var workoutExercise = await _workoutExerciseService.GetWorkoutExerciseByIdAsync(id);
         if (workoutExercise == null)
         {
             return NotFound();
         }
 
+        var workout = await _workoutService.GetWorkoutByIdAsync(workoutExercise.WorkoutId);
+
+        if (!User.IsInRole("Admin") && workout?.UserId != userId)
+        {
+            return Forbid();
+        }
+        
         return Ok(ToResponseDto(workoutExercise));
     }
 

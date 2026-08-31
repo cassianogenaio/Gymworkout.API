@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using GymWorkout.API.Entities;
 using GymWorkout.API.Services;
@@ -17,6 +18,7 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
+    [AllowAnonymous]
     [HttpPost("register")]
     public async Task<ActionResult> Register(CreateUserDto dto)
     {
@@ -29,7 +31,16 @@ public class AuthController : ControllerBase
             }
 
             var token = _authService.GenerateToken(user);
-            return Ok(new { Token = token });
+            var role = _authService.IsAdmin(user) ? "Admin" : "User";
+
+            return Ok(new
+            {
+                Token = token,
+                UserId = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Role = role
+            });
         }
         catch (InvalidOperationException ex)
         {
@@ -37,6 +48,7 @@ public class AuthController : ControllerBase
         }
     }
 
+    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<ActionResult> Login(LoginDto dto)
     {
@@ -47,6 +59,15 @@ public class AuthController : ControllerBase
         }
 
         var token = _authService.GenerateToken(user);
-        return Ok(new { Token = token });
+        var role = _authService.IsAdmin(user) ? "Admin" : "User";
+
+        return Ok(new
+        {
+            Token = token,
+            UserId = user.Id,
+            Name = user.Name,
+            Email = user.Email,
+            Role = role
+        });
     }
 }

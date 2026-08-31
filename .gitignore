@@ -30,6 +30,7 @@ dist/
 # =========================
 # OS
 # =========================
+readme-developer.md
 
 .DS_Store
 Thumbs.db

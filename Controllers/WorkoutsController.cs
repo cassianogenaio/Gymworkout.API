@@ -31,9 +31,7 @@ public class WorkoutsController : ControllerBase
             return Unauthorized();
         }
 
-        var workouts = User.IsInRole("Admin")
-            ? await _workoutService.GetAllWorkoutsAsync()
-            : await _workoutService.GetWorkoutsAsync(userId);
+        var workouts =  await _workoutService.GetWorkoutsAsync(userId);
 
         var workoutDtos = workouts
             .Select(ToResponseDto)
@@ -42,8 +40,8 @@ public class WorkoutsController : ControllerBase
         return Ok(workoutDtos);
     }
 
-    [HttpGet("all")]
     [Authorize(Roles = "Admin")]
+    [HttpGet("admin/all")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<List<WorkoutResponseDto>>> GetAll()
@@ -60,10 +58,21 @@ public class WorkoutsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<WorkoutResponseDto>> GetById(int id)
     {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!int.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized();
+        }
+        
         var workout = await _workoutService.GetWorkoutByIdAsync(id);
         if (workout == null)
         {
             return NotFound();
+        }
+
+        if (!User.IsInRole("Admin") && workout.UserId != userId)
+        {
+            return Forbid();
         }
 
         return Ok(ToResponseDto(workout));

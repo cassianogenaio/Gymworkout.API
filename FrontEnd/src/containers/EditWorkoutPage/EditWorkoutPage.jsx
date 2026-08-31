@@ -7,6 +7,7 @@ import * as authService from "../../services/authService";
 import * as workoutService from "../../services/workoutService";
 import * as workoutExercisesService from "../../services/workoutExercisesService";
 import * as exerciseService from "../../services/ExerciseService";
+import ExerciseItem from "../../components/exercise-item/exerciseItem";
 
 function EditWorkoutPage() {
   const navigate = useNavigate();
@@ -152,14 +153,11 @@ function EditWorkoutPage() {
 
             <div className="exercises-group">
               {workout?.workoutExercises?.map((exercise) => (
-                <div className="exercise-item" key={exercise.id}>
-                  <span>{exercise.exerciseName || `Exercício ${exercise.exerciseId}`}</span>
-                  <span>{exercise.sets} séries x {exercise.reps} repetições</span>
-                  <span>Descanso: {exercise.restTimeSeconds}s</span>
-                  <button type="button" className="remove-exercise-btn" onClick={() => openExerciseDeletePopUp(exercise)}>
-                    Excluir exercício
-                  </button>
-                </div>
+                <ExerciseItem
+                  key={exercise.id}
+                  exercise={exercise}
+                  onDelete={openExerciseDeletePopUp}
+                />
               ))}
               {workout?.workoutExercises?.length === 0 && <p>Este treino ainda não possui exercícios.</p>}
             </div>

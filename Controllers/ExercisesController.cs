@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using GymWorkout.API.Entities;
 using GymWorkout.API.Services;
 using GymWorkout.API.DTOs.Exercise;
+using System.Security.Claims;
 
 namespace GymWorkout.API.Controllers;
 
@@ -45,6 +46,7 @@ public class ExercisesController : ControllerBase
         return Ok(ToResponseDto(exercise));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -54,6 +56,7 @@ public class ExercisesController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = exercise.Id }, ToResponseDto(exercise));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -70,6 +73,7 @@ public class ExercisesController : ControllerBase
         return Ok(ToResponseDto(updatedExercise));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

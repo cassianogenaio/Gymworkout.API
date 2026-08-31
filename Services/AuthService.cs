@@ -41,17 +41,36 @@ public class AuthService
         return null;
     }
 
+    public bool IsAdmin(User user)
+    {
+        return IsAdmin(user.Email);
+    }
+
+    public bool IsAdmin(string email)
+    {
+        var adminEmail = _configuration["Jwt:AdminEmail"] ?? string.Empty;
+        return !string.IsNullOrWhiteSpace(email)
+            && !string.IsNullOrWhiteSpace(adminEmail)
+            && string.Equals(email.Trim(), adminEmail.Trim(), StringComparison.OrdinalIgnoreCase);
+    }
+
     public string GenerateToken(User user)
     {
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new(ClaimTypes.Email, user.Email)
+            new(ClaimTypes.Email, user.Email),
+            new(ClaimTypes.Name, user.Name)
         };
 
-        if (string.Equals(user.Email, _configuration["Jwt:AdminEmail"], StringComparison.OrdinalIgnoreCase))
+        if (IsAdmin(user))
         {
             claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+            claims.Add(new Claim("is_admin", "true"));
+        }
+        else
+        {
+            claims.Add(new Claim(ClaimTypes.Role, "User"));
         }
 
         var tokenDescriptor = new SecurityTokenDescriptor
