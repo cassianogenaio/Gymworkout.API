@@ -64,13 +64,17 @@ body,
 .edit-workout-form {
   display: flex;
   flex-direction: column;
+  margin-top: 0.8rem;
   gap: 1rem;
   justify-content: center;
   align-items: center;
 }
 
 .exercises-group {
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  gap: 0.4rem;
 }
 
 .add-exercise-btn {

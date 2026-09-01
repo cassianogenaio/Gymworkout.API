@@ -54,11 +54,14 @@ public class WorkoutService
         return workout;
     }
 
-    public async Task<Workout?> UpdateWorkoutAsync(int id, UpdateWorkoutDto dto, int userId)
+    public async Task<Workout?> UpdateWorkoutAsync(int id, UpdateWorkoutDto dto, int userId, bool isAdmin = false)
     {
         var existingWorkout = await _context.Workouts
-            .FirstOrDefaultAsync(w => w.Id == id && w.UserId == userId);
-        if (existingWorkout == null)
+            .FirstOrDefaultAsync(w => w.Id == id);
+
+        if (existingWorkout == null) return null;
+
+        if (!isAdmin && existingWorkout.UserId != userId)
         {
             return null;
         }

@@ -27,6 +27,24 @@ async function request(path, options = {}) {
   return response.status === 204 ? null : response.json();
 }
 
+function isAdmin() {
+  const token = localStorage.getItem("token");
+
+  if (!token) return false
+
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return (
+      payload?.role === "Admin" ||
+      payload?.role === "admin" ||
+      payload?.is_admin === "true"
+    );
+  } catch {
+    return false;
+  }
+}
+
+
 export function create(workoutId, exerciseId, sets, reps, restTimeSeconds) {
   return request("/WorkoutExercises", {
     method: "POST",

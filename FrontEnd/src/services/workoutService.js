@@ -27,8 +27,26 @@ async function request(path, options = {}) {
   return response.status === 204 ? null : response.json();
 }
 
+function isAdmin() {
+  const token = localStorage.getItem("token");
+
+  if (!token) return false
+
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return (
+      payload?.role === "Admin" ||
+      payload?.role === "admin" ||
+      payload?.is_admin === "true"
+    );
+  } catch {
+    return false;
+  }
+}
+
 export function getAll() {
-  return request("/Workouts");
+  const path = isAdmin() ? "/Workouts/admin/all" : "/Workouts";
+  return request(path);
 }
 
 export function getById(id) {

@@ -107,7 +107,8 @@ public class WorkoutsController : ControllerBase
         }
 
         dto.UserId = userId;
-        var updatedWorkout = await _workoutService.UpdateWorkoutAsync(id, dto, userId);
+        var isAdmin = User.IsInRole("Admin");
+        var updatedWorkout = await _workoutService.UpdateWorkoutAsync(id, dto, userId, isAdmin);
         if (updatedWorkout == null)
         {
             return NotFound();

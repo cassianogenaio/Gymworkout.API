@@ -19,66 +19,126 @@ function EditWorkoutPage() {
   const [modal, setModal] = useState(null);
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [exercises, setExercises] = useState([]);
+  const [pendingExercises, setPendingExercises] = useState([]);
   const [exerciseForm, setExerciseForm] = useState({ exerciseId: "", sets: 3, reps: 10, restTimeSeconds: 60 });
   const [isAddingExercise, setIsAddingExercise] = useState(false);
 
-  const openPopUp = () => {
-    setModal("delete-workout");
-  };
+
+  const openPopUp = async (modal, exercise) => {
+    if (modal === "delete-workout") {
+      setModal("delete-workout");
+    } 
+    
+    if (modal === "delete-exercise") {
+      setSelectedExercise(exercise);
+      setModal("delete-exercise");
+    } 
+    
+    if (modal === "add-exercise") {
+      setError("");
+      try {
+        const availableExercises = await exerciseService.getAll();
+        setExercises(availableExercises);
+        setExerciseForm((currentForm) => ({
+          ...currentForm,
+          exerciseId: currentForm.exerciseId || String(availableExercises[0]?.id || ""),
+        }));
+        setModal("add-exercise");
+      } catch (requestError) {
+        setError(requestError.message);
+      }
+    };
+  }
 
   const closePopUp = () => {
     setModal(null);
     setSelectedExercise(null);
   }
 
-  const openExerciseDeletePopUp = (exercise) => {
-    setSelectedExercise(exercise);
-    setModal("delete-exercise");
-  };
-
-  const openAddExercisePopUp = async () => {
-    setError("");
-    try {
-      const availableExercises = await exerciseService.getAll();
-      setExercises(availableExercises);
-      setExerciseForm((currentForm) => ({
-        ...currentForm,
-        exerciseId: currentForm.exerciseId || String(availableExercises[0]?.id || ""),
-      }));
-      setModal("add-exercise");
-    } catch (requestError) {
-      setError(requestError.message);
-    }
-  };
+  ////////////////////
 
   const handleExerciseFormChange = (event) => {
     const { name: fieldName, value } = event.target;
     setExerciseForm((currentForm) => ({ ...currentForm, [fieldName]: value }));
   };
 
+
   const handleAddExercise = async (event) => {
     event.preventDefault();
     setError("");
-    setIsAddingExercise(true);
+
+    const exercise = exercises.find((item) => item.id === Number(exerciseForm.exerciseId));
+
+    setPendingExercises((currentPending) => ([
+    ...currentPending,
+    {
+      tempId: `temp-${Date.now()}`, // id temporário só pra usar como key e permitir deletar antes de salvar
+      exerciseId: Number(exerciseForm.exerciseId),
+      sets: Number(exerciseForm.sets),
+      reps: Number(exerciseForm.reps),
+      restTimeSeconds: Number(exerciseForm.restTimeSeconds),
+      exerciseName: exercise?.name,
+    },
+    ]));
+
+  closePopUp();
+
+  };
+
+  const handleDeleteExercise = async () => {
+    if (!selectedExercise) {
+      return;
+    }
 
     try {
-      const addedExercise = await workoutExercisesService.create(
-        Number(id),
-        Number(exerciseForm.exerciseId),
-        Number(exerciseForm.sets),
-        Number(exerciseForm.reps),
-        Number(exerciseForm.restTimeSeconds)
-      );
-      const exercise = exercises.find((item) => item.id === Number(exerciseForm.exerciseId));
+      await workoutExercisesService.remove(selectedExercise.id);
       setWorkout((currentWorkout) => ({
         ...currentWorkout,
-        workoutExercises: [...(currentWorkout.workoutExercises || []), { ...addedExercise, exerciseName: exercise?.name }],
+        workoutExercises: currentWorkout.workoutExercises.filter(
+          (currentExercise) => currentExercise.id !== selectedExercise.id
+        ),
       }));
+      
       closePopUp();
     } catch (requestError) {
       setError(requestError.message);
-    } finally {
-      setIsAddingExercise(false);
+    }
+  };
+  
+  const handleDeleteWorkout = async () => {
+    try {
+      await workoutService.remove(id);
+      navigate("/home");
+    } catch (requestError) {
+      setError(requestError.message);
+    }
+  };
+  
+  //////////////////////////
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setError("");
+
+    try {
+      const userId = authService.getUserId();
+      await workoutService.update(id, name, userId);
+
+      await Promise.all(
+        pendingExercises.map((exercise) => 
+          workoutExercisesService.create(
+          Number(id),
+          exercise.exerciseId,
+          exercise.sets,
+          exercise.reps,
+          exercise.restTimeSeconds
+          )
+        )
+      );
+
+      navigate("/home");
+    } catch (requestError) {
+      setError(requestError.message);
     }
   };
 
@@ -94,51 +154,11 @@ function EditWorkoutPage() {
         setIsLoading(false);
       }
     };
-
+    
     loadWorkout();
   }, [id]);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setError("");
-
-    try {
-      const userId = authService.getUserId();
-      await workoutService.update(id, name, userId);
-      navigate("/home");
-    } catch (requestError) {
-      setError(requestError.message);
-    }
-  };
-
-
-  const handleDeleteExercise = async () => {
-    if (!selectedExercise) {
-      return;
-    }
-
-    try {
-      await workoutExercisesService.remove(selectedExercise.id);
-      setWorkout((currentWorkout) => ({
-        ...currentWorkout,
-        workoutExercises: currentWorkout.workoutExercises.filter(
-          (currentExercise) => currentExercise.id !== selectedExercise.id
-        ),
-      }));
-      closePopUp();
-    } catch (requestError) {
-      setError(requestError.message);
-    }
-  };
-
-  const handleDeleteWorkout = async () => {
-    try {
-      await workoutService.remove(id);
-      navigate("/home");
-    } catch (requestError) {
-      setError(requestError.message);
-    }
-  };
+  ////////////////////
 
   return (
     <div className="edit-workout-page">
@@ -156,24 +176,42 @@ function EditWorkoutPage() {
                 <ExerciseItem
                   key={exercise.id}
                   exercise={exercise}
-                  onDelete={openExerciseDeletePopUp}
+                  onDelete={(selected) => openPopUp("delete-exercise", selected)}
+                />
+              ))}
+              {pendingExercises.map((exercise) => (
+                <ExerciseItem
+                  key={exercise.tempId}
+                  exercise={{
+                    id: exercise.tempId,
+                    exerciseId: exercise.exerciseId,
+                    sets: exercise.sets,
+                    reps: exercise.reps,
+                    restTimeSeconds: exercise.restTimeSeconds,
+                    exerciseName: exercise.exerciseName,
+                  }}
+                  onDelete={() =>
+                    setPendingExercises((currentPending) =>
+                      currentPending.filter((item) => item.tempId !== exercise.tempId)
+                    )
+                  }
                 />
               ))}
               {workout?.workoutExercises?.length === 0 && <p>Este treino ainda não possui exercícios.</p>}
             </div>
 
-            <button type="button" className="add-exercise-btn" onClick={openAddExercisePopUp}>
+            <button type="button" className="add-exercise-btn" onClick={() => openPopUp("add-exercise")}>
               + Adicionar exercício
             </button>
 
             <Button type="submit">Salvar alterações</Button>
-            <button type="button" className="delete-workout-btn" onClick={openPopUp}>
+            <button type="button" className="delete-workout-btn" onClick={() => openPopUp("delete-workout")}>
               Excluir treino inteiro
             </button>
             
             {modal === "add-exercise" && (
               <div className="popup-add-overlay" onClick={closePopUp}>
-                <form className="popup-add" onSubmit={handleAddExercise} onClick={(event) => event.stopPropagation()}>
+                <div className="popup-add" onClick={(event) => event.stopPropagation()}>
                   <div className="popup-add-content">
                     <h2 id="add-exercise-title">Adicionar exercício</h2>
                     <label htmlFor="exerciseId">Exercício
@@ -188,10 +226,10 @@ function EditWorkoutPage() {
                     <label>Descanso (segundos)<input type="number" name="restTimeSeconds" min="0" max="3600" value={exerciseForm.restTimeSeconds} onChange={handleExerciseFormChange} required /></label>
                     <div className="popup-add-buttons">
                       <button type="button" className="popup-add-button" onClick={closePopUp}>Cancelar</button>
-                      <button type="submit" className="popup-add-button popup-add-button--primary" disabled={isAddingExercise}>{isAddingExercise ? "Adicionando..." : "Adicionar"}</button>
+                      <button type="button" className="popup-add-button popup-add-button--primary" onClick={handleAddExercise} disabled={isAddingExercise}>{isAddingExercise ? "Adicionando..." : "Adicionar"}</button>
                     </div>
                   </div>
-                </form>
+                </div>
               </div>
             )}
 

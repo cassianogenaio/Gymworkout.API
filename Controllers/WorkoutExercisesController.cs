@@ -76,8 +76,9 @@ public class WorkoutExercisesController : ControllerBase
         }
 
         var workout = await _workoutService.GetWorkoutByIdAsync(workoutExercise.WorkoutId);
+        var isAdmin = User.IsInRole("Admin");
 
-        if (!User.IsInRole("Admin") && workout?.UserId != userId)
+        if (!isAdmin && workout?.UserId != userId)
         {
             return Forbid();
         }
