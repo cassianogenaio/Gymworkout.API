@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { Plus, Pencil, Dumbbell, ChevronDown } from "lucide-react";
 import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input";
+import NavBar from "../../components/NavBar/navbar";
 import React, { useEffect, useState } from 'react';
 import * as authService from "../../services/authService";
 import * as workoutService from "../../services/workoutService";
 import * as workoutExercisesService from "../../services/workoutExercisesService";
+
 
 function HomePage() {
   const [isOpen, setIsOpen] = useState(false);
@@ -62,6 +64,8 @@ function HomePage() {
   }
 
   return (
+    <>
+    <NavBar />
     <div className="home-page">
       <div className="home-page__container">
         <div className="home-page__topbar">
@@ -146,6 +150,7 @@ function HomePage() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

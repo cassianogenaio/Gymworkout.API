@@ -2,15 +2,15 @@ import "./ProfilePage.css";
 import { User, Mail, Lock, Pencil } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import profileImage from "../../assets/img/Profile_default.jpeg";
+import NavBar from "../../components/NavBar/navbar";
 
 function ProfilePage() {
   const navigate = useNavigate();
 
   return (
+    <>
+    <NavBar />
     <div className="profile-page">
-      <button className="profile-back" onClick={() => navigate("/login")}>
-        &lt; Back
-      </button>
       <div className="profile-container">
         <section className="profile-header">
           <h2>Perfil</h2>
@@ -61,6 +61,7 @@ function ProfilePage() {
         </section>
       </div>
     </div>
+    </>
   );
 }
 
