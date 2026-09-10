@@ -15,7 +15,7 @@ body,
 .profile-page {
   display: flex;
   justify-content: center;
-  min-height: 100vh;
+  /* min-height: 100vh; achei desnecessario */
   position: relative;
   overflow: hidden;
   padding: 20px;
@@ -29,6 +29,7 @@ body,
   max-width: 620px;
   position: relative;
   gap: 20px;
+  height: max-content;
 }
 
 .profile-header {
