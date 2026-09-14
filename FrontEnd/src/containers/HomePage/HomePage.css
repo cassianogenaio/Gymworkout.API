@@ -160,11 +160,15 @@ body,
   transition: transform 0.15s ease;
 }
 
-.home-page .workout-card--expanded .workout-card__toggle-button {
+/* .home-page .workout-card--expanded .workout-card__toggle-button {
   transform: rotate(180deg);
-}
+} */
 
 .home-page .workout-card__exercises {
+  display: none;
+}
+
+.home-page .workout-card__exercises--enable {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -304,10 +308,20 @@ body,
 }
 
 .home-page .ChevroDown {
-  transition: 0.5s ease-out;
+  transition: 0.3s ease-out;
+}
+
+.home-page .ChevroDown--enable {
+  transform: rotate(180deg);
+  transition: 0.3s ease-out;
 }
 
 .home-page .ChevroDown:hover { 
-  color: #5c5c5c;
-  transform: rotate(180deg);
+  color: #3b3a3a;
+  /* transform: rotate(180deg); */
+}
+
+.home-page .ChevroDown--enable:hover {
+  color: #3b3a3a;
+  /* transform: rotate(-0deg); */
 }
