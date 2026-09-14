@@ -7,7 +7,7 @@ import * as authService from "../../services/authService";
 import * as workoutService from "../../services/workoutService";
 import * as workoutExercisesService from "../../services/workoutExercisesService";
 import * as exerciseService from "../../services/ExerciseService";
-import ExerciseItem from "../../components/exercise-item/exerciseItem";
+import ExerciseItem from "../../components/Exercise-item/exerciseItem";
 import Modal from "../../components/Modal/modal";
 
 function EditWorkoutPage() {

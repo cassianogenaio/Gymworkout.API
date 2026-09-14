@@ -4,6 +4,7 @@ import { Plus, Pencil, Dumbbell, ChevronDown } from "lucide-react";
 import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input";
 import NavBar from "../../components/NavBar/navbar";
+import ExerciseItem from "../../components/Exercise-item/exerciseItem";
 import React, { useEffect, useState } from "react";
 import * as authService from "../../services/authService";
 import * as workoutService from "../../services/workoutService";
@@ -114,8 +115,14 @@ function HomePage() {
                       className="workout-card__toggle-button"
                       onClick={() => handleOpenExercise(workout.id)}
                     >
-                      <ChevronDown size={18} className={openWorkouts.includes(workout.id) ? "ChevroDown--enable"
-                      : "ChevroDown"} />
+                      <ChevronDown
+                        size={18}
+                        className={
+                          openWorkouts.includes(workout.id)
+                            ? "ChevroDown--enable"
+                            : "ChevroDown"
+                        }
+                      />
                     </button>
                   </div>
                 </div>
@@ -128,22 +135,15 @@ function HomePage() {
                       : "workout-card__exercises"
                   }
                 >
-                  {workout.workoutExercises?.map((exercise) => (
-                    <div className="exercise-item" key={exercise.id}>
-                      <div className="exercise-item__info">
-                        <span className="exercise-item__icon">
-                          <Dumbbell size={14} />
-                        </span>
-
-                        <p>{exercise.exerciseName}</p>
-                      </div>
-
-                      <span className="exercise-item__meta">
-                        {exercise.sets}x{exercise.reps} ·{" "}
-                        {exercise.restTimeSeconds}s
-                      </span>
+                  {workout?.workoutExercises && workout.workoutExercises.length > 0 ? (
+                    workout.workoutExercises.map((exercise) => (
+                      <ExerciseItem key={exercise.id} exercise={exercise} />
+                    ))
+                  ) : (
+                    <div className="no-exercises">
+                      <p>Nenhum exercício cadastrado para este treino. 💪</p>
                     </div>
-                  ))}
+                  )}
                 </div>
               </article>
             ))}
