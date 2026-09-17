@@ -1,7 +1,6 @@
 import "./HomePage.css";
 import { useNavigate } from "react-router-dom";
 import { Plus, Pencil, Dumbbell, ChevronDown } from "lucide-react";
-import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input";
 import NavBar from "../../components/NavBar/navbar";
 import ExerciseItem from "../../components/Exercise-item/exerciseItem";

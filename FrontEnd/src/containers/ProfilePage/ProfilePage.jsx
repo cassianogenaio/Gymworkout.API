@@ -1,11 +1,42 @@
 import "./ProfilePage.css";
+import { useState, useEffect } from "react";
 import { User, Mail, Lock, Pencil } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import profileImage from "../../assets/img/Profile_default.jpeg";
 import NavBar from "../../components/NavBar/navbar";
+import * as authService from "../../services/authService";
+import userService from "../../services/userService";
+// import * as userService from "../../services/userService"
 
 function ProfilePage() {
   const navigate = useNavigate();
+  const [error, setError] = useState("");
+  const [user, setUser] = useState(null);
+
+  const loadUser = async () => {
+    try {
+      const userId = authService.getUserId();
+
+      console.log(Number(userId));
+      if (!userId) return;
+
+      const userData = await userService.getCurrentUser(userId);
+      console.log(userData);
+      setUser(userData);
+    } catch (requestError) {
+      setError(requestError.message);
+    }
+  };
+
+  // console.log(user)
+
+  useEffect(() => {
+    loadUser();
+  }, []);
+
+  if (!user) {
+    return <p>Carregando perfil...</p>;
+  }
 
   return (
     <>
@@ -22,8 +53,8 @@ function ProfilePage() {
                 <img src={profileImage} alt="Foto de perfil" />
               </div>
               <div className="profile-card__info">
-                <label>Cassiano de Castro Genaio</label>
-                <p>cassianosite@gmail.com</p>
+                <label>{user.name}</label>
+                <p>{user.email}</p>
               </div>
             </div>
             <div className="profile-card profile-card--personal-info">
@@ -38,14 +69,14 @@ function ProfilePage() {
                   <User size={15} color="rgb(107, 107, 107)" />
                   <p>Nome</p>
                 </div>
-                <p className="profile-card__value">Cassiano de Castro Genaio</p>
+                <p className="profile-card__value">{user.name}</p>
               </div>
               <div className="profile-card__info-block profile-card__info-block--email">
                 <div className="profile-card__info-row">
                   <Mail size={15} color="rgb(107, 107, 107)" />
                   <p>Email</p>
                 </div>
-                <p className="profile-card__value">cassianosite@gmail.com</p>
+                <p className="profile-card__value">{user.email}</p>
               </div>
             </div>
             <div className="profile-card profile-card--password">

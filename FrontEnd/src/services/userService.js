@@ -1,18 +1,23 @@
+import { getUserId } from "./authService";
+
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5011";
 
-async function request(path, body) {
-    const token = localStorage.getItem("token");
-    const res = await fetch(`${API_BASE}${path}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+async function request(path, options = {}) {
+  const token = localStorage.getItem("token");
+  const response = await fetch(`${API_BASE}${path}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...options.headers,
+    },
   });
 
-  if (!res.ok) {
-    let message = res.statusText;
+  if (!response.ok) {
+    let message = response.statusText;
 
     try {
-      const data = await res.json();
+      const data = await response.json();
       message = data?.erro || data?.message || message;
     } catch {
       // resposta não era JSON válido, mantém o statusText
@@ -21,5 +26,11 @@ async function request(path, body) {
     throw new Error(message);
   }
 
-  return res.json();
+  return response.status === 204 ? null : response.json();
 }
+
+export function getCurrentUser(userId) {
+  return request(`/Users/${userId}`);
+}
+
+export default { getCurrentUser, getUserId }
