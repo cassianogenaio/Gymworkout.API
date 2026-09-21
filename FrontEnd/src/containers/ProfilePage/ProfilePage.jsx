@@ -31,6 +31,7 @@ function ProfilePage() {
   };
 
   const closePopUp = () => {
+    
     setModal(null);
   };
 
@@ -38,11 +39,9 @@ function ProfilePage() {
     try {
       const userId = authService.getUserId();
 
-      console.log(Number(userId));
       if (!userId) return;
 
       const userData = await userService.getCurrentUser(userId);
-      console.log(userData);
       setUser(userData);
     } catch (requestError) {
       setError(requestError.message);
@@ -94,11 +93,15 @@ function ProfilePage() {
     try {
       await userService.changePassword(form.currentPassword, form.newPassword);
       setForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+      setError("");
+      setErrors({});
       closePopUp();
     } catch (requestError) {
-      setError(requestError.message || "Não foi possível alterar a senha.");
+      const message =
+        requestError.message || "Não foi possível alterar a senha.";
+      setError(message);
       setErrors({
-        currentPassword: requestError.message || "Senha atual inválida.",
+        currentPassword: message,
       });
     }
   };
@@ -180,12 +183,8 @@ function ProfilePage() {
                   <h2>Edit your information</h2>
                 </div>
                 <div className="popup-form-change">
-                  <Input type="text" id="name" placeholder="Your name"></Input>
-                  <Input
-                    type="email"
-                    id="email"
-                    placeholder="Your email"
-                  ></Input>
+                  <Input type="text" id="name" placeholder="Your name" />
+                  <Input type="email" id="email" placeholder="Your email" />
                 </div>
                 <div className="popup-buttons">
                   <button className="popup-cancel-button" onClick={closePopUp}>
@@ -209,7 +208,7 @@ function ProfilePage() {
                     onChange={(e) =>
                       setForm({ ...form, currentPassword: e.target.value })
                     }
-                  ></Input>
+                  />
                   <Input
                     type="password"
                     id="new-password"
@@ -218,7 +217,8 @@ function ProfilePage() {
                     onChange={(e) =>
                       setForm({ ...form, newPassword: e.target.value })
                     }
-                  ></Input>
+                  />
+
                   <Input
                     type="password"
                     id="confirm-password"
@@ -227,7 +227,35 @@ function ProfilePage() {
                     onChange={(e) =>
                       setForm({ ...form, confirmPassword: e.target.value })
                     }
-                  ></Input>
+                  />
+                  {error && (
+                    <small
+                      style={{ color: "red", display: "block", marginTop: 6 }}
+                    >
+                      {error}
+                    </small>
+                  )}
+                  {errors.currentPassword && (
+                    <small
+                      style={{ color: "red", display: "block", marginTop: 6 }}
+                    >
+                      {errors.currentPassword}
+                    </small>
+                  )}
+                  {errors.newPassword && (
+                    <small
+                      style={{ color: "red", display: "block", marginTop: 6 }}
+                    >
+                      {errors.newPassword}
+                    </small>
+                  )}
+                  {errors.confirmPassword && (
+                    <small
+                      style={{ color: "red", display: "block", marginTop: 6 }}
+                    >
+                      {errors.confirmPassword}
+                    </small>
+                  )}
                 </div>
                 <div className="popup-buttons">
                   <button className="popup-cancel-button" onClick={closePopUp}>

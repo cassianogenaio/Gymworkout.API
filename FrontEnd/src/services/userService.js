@@ -15,10 +15,29 @@ async function request(path, options = {}) {
     let message = response.statusText;
 
     try {
-      const data = await response.json();
-      message = data?.erro || data?.message || message;
+      const text = await response.text();
+      if (text) {
+        const data = JSON.parse(text);
+
+        if (data?.errors && typeof data.errors === "object") {
+          const allErrors = Object.values(data.errors).flat().filter(Boolean);
+
+          if (allErrors.length) {
+            message = allErrors.join(" ");
+          }
+        }
+
+        if (!message || message === response.statusText) {
+          message =
+            data?.erro ||
+            data?.message ||
+            data?.title ||
+            data?.detail ||
+            response.statusText;
+        }
+      }
     } catch {
-      // resposta não era JSON válido, mantém o statusText
+      message = response.statusText;
     }
 
     throw new Error(message);
