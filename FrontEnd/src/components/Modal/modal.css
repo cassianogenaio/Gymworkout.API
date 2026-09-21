@@ -66,13 +66,13 @@
 }
 
 .modal-button--danger {
-  background-color: #7f1d1d;
-  border: 1px solid #991b1b;
+  background-color: var(--danger-900);
+  border: 1px solid var(--danger-800);
   color: var(--neutral-100);
 }
 
 .modal-button--danger:hover {
-  background-color: #450a0a;
+  background-color: var(--danger-950);
 }
 
 .modal-button--primary {

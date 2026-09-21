@@ -18,6 +18,16 @@
   --accent-200: #a7f3d0; /* emerald-200 */
   --accent-100: #d1fae5; /* emerald-100 */
   --accent-soft: rgba(16, 185, 129, 0.14);
+
+  --danger-950: #450a0a;
+  --danger-900: #7f1d1d;
+  --danger-800: #991b1b;
+  --danger-700: #b91c1c;
+  --danger-600: #dc2626;
+  --danger-500: #ef4444;
+  --danger-400: #f87171;
+  --danger-300: #fca5a5;
+  --danger-soft: rgba(239, 68, 68, 0.14);
 }
 
 *,
@@ -183,7 +193,6 @@ body,
   opacity: 1;
   padding: 0 1.25rem 1rem;
 }
-
 
 /* Estado vazio / novo treino */
 

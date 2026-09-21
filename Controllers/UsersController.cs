@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using GymWorkout.API.Entities;
 using GymWorkout.API.Services;
@@ -87,6 +88,28 @@ public class UsersController : ControllerBase
         }
 
         return NoContent();
+    }
+
+    [Authorize]
+    [HttpPut("change-password")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult> ChangePassword(ChangePasswordDto dto)
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrWhiteSpace(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized(new { erro = "Usuário não autenticado." });
+        }
+
+        var success = await _userService.ChangePasswordAsync(userId, dto.CurrentPassword, dto.NewPassword);
+        if (!success)
+        {
+            return BadRequest(new { erro = "Senha atual inválida ou nova senha inválida." });
+        }
+
+        return Ok(new { message = "Senha alterada com sucesso." });
     }
 
     private static UserResponseDto ToResponseDto(User user)

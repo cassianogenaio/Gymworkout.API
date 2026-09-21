@@ -1,5 +1,3 @@
-import { getUserId } from "./authService";
-
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5011";
 
 async function request(path, options = {}) {
@@ -33,4 +31,11 @@ export function getCurrentUser(userId) {
   return request(`/Users/${userId}`);
 }
 
-export default { getCurrentUser, getUserId }
+export async function changePassword(currentPassword, newPassword) {
+  return request("/Users/change-password", {
+    method: "PUT",
+    body: JSON.stringify({ currentPassword, newPassword }),
+  });
+}
+
+export default { getCurrentUser, changePassword };

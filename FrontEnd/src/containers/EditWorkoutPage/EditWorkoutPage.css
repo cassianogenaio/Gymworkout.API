@@ -5,7 +5,6 @@
   font-family: "Poppins", sans-serif;
 }
 
-
 :root {
   --neutral-100: #f5f5f5;
   --neutral-200: #e5e5e5;
@@ -26,6 +25,16 @@
   --accent-200: #a7f3d0; /* emerald-200 */
   --accent-100: #d1fae5; /* emerald-100 */
   --accent-soft: rgba(16, 185, 129, 0.14);
+
+  --danger-950: #450a0a;
+  --danger-900: #7f1d1d;
+  --danger-800: #991b1b;
+  --danger-700: #b91c1c;
+  --danger-600: #dc2626;
+  --danger-500: #ef4444;
+  --danger-400: #f87171;
+  --danger-300: #fca5a5;
+  --danger-soft: rgba(239, 68, 68, 0.14);
 }
 
 *,
@@ -90,7 +99,9 @@ body,
   color: var(--neutral-400);
   font-size: 0.875rem;
   cursor: pointer;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .add-exercise-btn:hover {
@@ -105,7 +116,7 @@ select {
   padding: 0.5rem;
   margin-bottom: 0.65rem;
   color: var(--neutral-300);
-  background-color: var(--neutral-500); 
+  background-color: var(--neutral-500);
   border: 1px solid var(--neutral-700);
 }
 
@@ -120,7 +131,7 @@ select {
   z-index: 1000;
 }
 
-.popup-delete{
+.popup-delete {
   width: min(90vw, 20rem);
   background-color: var(--neutral-900);
   border: 1px solid var(--neutral-700);
@@ -233,13 +244,13 @@ select {
 }
 
 .popup-delete-button--primary {
-  background-color: #7f1d1d;
-  border: 1px solid #991b1b;
+  background-color: var(--danger-900);
+  border: 1px solid var(--danger-800);
   color: var(--neutral-100);
 }
 
 .popup-delete-button--primary:hover {
-  background-color: #450a0a;
+  background-color: var(--danger-950);
 }
 
 .popup-add-button {
@@ -278,8 +289,8 @@ select {
 /* .edit-workout-page .exercises-group {} */
 
 .delete-workout-btn {
-  border: 1px solid #991b1b;
-  background: #7f1d1d;
+  border: 1px solid var(--danger-800);
+  background: var(--danger-900);
   color: var(--neutral-100);
   border-radius: 0.625rem;
   padding: 0.625rem 1rem;
@@ -289,7 +300,7 @@ select {
 }
 
 .delete-workout-btn:hover {
-  background-color: #450a0a;
+  background-color: var(--danger-950);
 }
 
 .form-buttons {
@@ -317,4 +328,3 @@ select {
   border-color: var(--accent-300);
   color: var(--neutral-950);
 }
-
