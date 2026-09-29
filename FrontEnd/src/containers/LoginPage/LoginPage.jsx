@@ -16,52 +16,54 @@ function LoginPage() {
     setError(null);
     try {
       const token = await authService.login(email, password);
-      if (token) { 
+      if (token) {
         localStorage.setItem("token", token);
         navigate("/home");
       }
     } catch (err) {
       if (password === "") {
-        setError("Password is required.");
+        setError("A senha é obrigatória.");
       }
       if (email === "") {
-        setError("Email is required.");
+        setError("O e-mail é obrigatório.");
       }
 
-      setError("Email or password is incorrect.");
+      setError("E-mail ou senha incorretos.");
     }
-  }
-   
+  };
+
   return (
     <div className="login-page">
       <div className="login-container">
         <form onSubmit={handleLogin}>
-          <h1 className="Title-login">Login</h1>
+          <h1 className="Title-login">Entrar</h1>
           <div className="input-group">
             <div className="input-box">
-              <Input 
-                type="email" 
-                id="email" 
-                placeholder="Email" 
+              <Input
+                type="email"
+                id="email"
+                placeholder="E-mail"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="input-box">
-              <Input 
-                type="password" 
-                id="password" 
-                placeholder="Password" 
+              <Input
+                type="password"
+                id="password"
+                placeholder="Senha"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
           </div>
           {error && <p className="form-error">{error}</p>}
-          <Button type="submit" className="btn-login">Login</Button>
+          <Button type="submit" className="btn-login">
+            Entrar
+          </Button>
           <div className="register-link">
-            <span>Don't have an account?</span>
-            <Link to="/register">Register</Link>
+            <span>Ainda não tem uma conta?</span>
+            <Link to="/register">Cadastre-se</Link>
           </div>
         </form>
       </div>

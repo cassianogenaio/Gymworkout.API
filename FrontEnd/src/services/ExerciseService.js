@@ -1,5 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5011"; 
-
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5011";
 
 async function request(path, options = {}) {
   const token = localStorage.getItem("token");
@@ -13,7 +12,7 @@ async function request(path, options = {}) {
   });
 
   if (!response.ok) {
-    let message = response.statusText;
+    let message = "Não foi possível concluir a solicitação.";
 
     try {
       const data = await response.json();
@@ -32,4 +31,4 @@ export function getAll() {
   return request("/Exercises");
 }
 
-export default { getAll }
+export default { getAll };

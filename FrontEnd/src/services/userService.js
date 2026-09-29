@@ -12,7 +12,7 @@ async function request(path, options = {}) {
   });
 
   if (!response.ok) {
-    let message = response.statusText;
+    let message = "Não foi possível concluir a solicitação.";
 
     try {
       const text = await response.text();
@@ -33,11 +33,11 @@ async function request(path, options = {}) {
             data?.message ||
             data?.title ||
             data?.detail ||
-            response.statusText;
+            "Não foi possível concluir a solicitação.";
         }
       }
     } catch {
-      message = response.statusText;
+      message = "Não foi possível concluir a solicitação.";
     }
 
     throw new Error(message);

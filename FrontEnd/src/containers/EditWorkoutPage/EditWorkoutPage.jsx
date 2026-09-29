@@ -22,20 +22,24 @@ function EditWorkoutPage() {
   const [exercises, setExercises] = useState([]);
   const [pendingExercises, setPendingExercises] = useState([]);
   const [exercisesToDelete, setExercisesToDelete] = useState([]);
-  const [exerciseForm, setExerciseForm] = useState({ exerciseId: "", sets: 3, reps: 10, restTimeSeconds: 60 });
+  const [exerciseForm, setExerciseForm] = useState({
+    exerciseId: "",
+    sets: 3,
+    reps: 10,
+    restTimeSeconds: 60,
+  });
   const [isAddingExercise, setIsAddingExercise] = useState(false);
-
 
   const openPopUp = async (modal, exercise) => {
     if (modal === "delete-workout") {
       setModal("delete-workout");
-    } 
-    
+    }
+
     if (modal === "delete-exercise") {
       setSelectedExercise(exercise);
       setModal("delete-exercise");
-    } 
-    
+    }
+
     if (modal === "add-exercise") {
       setError("");
       try {
@@ -43,60 +47,68 @@ function EditWorkoutPage() {
         setExercises(availableExercises);
         setExerciseForm((currentForm) => ({
           ...currentForm,
-          exerciseId: currentForm.exerciseId || String(availableExercises[0]?.id || ""),
+          exerciseId:
+            currentForm.exerciseId || String(availableExercises[0]?.id || ""),
         }));
         setModal("add-exercise");
       } catch (requestError) {
         setError(requestError.message);
       }
-    };
-  }
+    }
+  };
 
   const closePopUp = () => {
     setModal(null);
     setSelectedExercise(null);
-  }
+  };
 
   const handleExerciseFormChange = (event) => {
     const { name: fieldName, value } = event.target;
     setExerciseForm((currentForm) => ({ ...currentForm, [fieldName]: value }));
   };
 
-
   const handleAddExercise = async (event) => {
     event.preventDefault();
     setError("");
 
-    const exercise = exercises.find((item) => item.id === Number(exerciseForm.exerciseId));
+    const exercise = exercises.find(
+      (item) => item.id === Number(exerciseForm.exerciseId),
+    );
 
-    setPendingExercises((currentPending) => ([
-    ...currentPending,
-    {
-      tempId: `temp-${Date.now()}`, // id temporário só pra usar como key e permitir deletar antes de salvar
-      exerciseId: Number(exerciseForm.exerciseId),
-      sets: Number(exerciseForm.sets),
-      reps: Number(exerciseForm.reps),
-      restTimeSeconds: Number(exerciseForm.restTimeSeconds),
-      exerciseName: exercise?.name,
-    },
-    ]));
+    setPendingExercises((currentPending) => [
+      ...currentPending,
+      {
+        tempId: `temp-${Date.now()}`, // id temporário só pra usar como key e permitir deletar antes de salvar
+        exerciseId: Number(exerciseForm.exerciseId),
+        sets: Number(exerciseForm.sets),
+        reps: Number(exerciseForm.reps),
+        restTimeSeconds: Number(exerciseForm.restTimeSeconds),
+        exerciseName: exercise?.name,
+      },
+    ]);
 
-  closePopUp();
-
+    closePopUp();
   };
 
   const handleDeleteExercise = async () => {
     if (!selectedExercise) return;
-    
+
     if (selectedExercise.tempId) {
-      setPendingExercises((currentPending) => currentPending.filter((exercise) => exercise.tempId !== selectedExercise.tempId));
+      setPendingExercises((currentPending) =>
+        currentPending.filter(
+          (exercise) => exercise.tempId !== selectedExercise.tempId,
+        ),
+      );
     } else {
-      setExercisesToDelete((currentIds) => ([...currentIds, selectedExercise.id]));
+      setExercisesToDelete((currentIds) => [
+        ...currentIds,
+        selectedExercise.id,
+      ]);
     }
 
     closePopUp();
   };
-  
+
   const handleDeleteWorkout = async () => {
     try {
       await workoutService.remove(id);
@@ -120,12 +132,12 @@ function EditWorkoutPage() {
           exercise.exerciseId,
           exercise.sets,
           exercise.reps,
-          exercise.restTimeSeconds
-        )
+          exercise.restTimeSeconds,
+        ),
       );
 
       const deleteExerciseRequests = exercisesToDelete.map((exerciseId) =>
-        workoutExercisesService.remove(exerciseId)
+        workoutExercisesService.remove(exerciseId),
       );
 
       await Promise.all([...createExerciseRequests, ...deleteExerciseRequests]);
@@ -148,7 +160,7 @@ function EditWorkoutPage() {
         setIsLoading(false);
       }
     };
-    
+
     loadWorkout();
   }, [id]);
 
@@ -161,16 +173,26 @@ function EditWorkoutPage() {
           <p>Carregando treino...</p>
         ) : (
           <form className="edit-workout-form" onSubmit={handleSubmit}>
-            <Input type="text" id="workoutName" placeholder="Nome do treino" value={name} onChange={(event) => setName(event.target.value)} />
+            <Input
+              type="text"
+              id="workoutName"
+              placeholder="Nome do treino"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+            />
 
             <div className="exercises-group">
-              {workout?.workoutExercises?.filter((exercise) => !exercisesToDelete.includes(exercise.id)).map((exercise) => (
-                <ExerciseItem
-                  key={exercise.id}
-                  exercise={exercise}
-                  onDelete={(selected) => openPopUp("delete-exercise", selected)}
-                />
-              ))}
+              {workout?.workoutExercises
+                ?.filter((exercise) => !exercisesToDelete.includes(exercise.id))
+                .map((exercise) => (
+                  <ExerciseItem
+                    key={exercise.id}
+                    exercise={exercise}
+                    onDelete={(selected) =>
+                      openPopUp("delete-exercise", selected)
+                    }
+                  />
+                ))}
               {pendingExercises.map((exercise) => (
                 <ExerciseItem
                   key={exercise.tempId}
@@ -182,24 +204,35 @@ function EditWorkoutPage() {
                     restTimeSeconds: exercise.restTimeSeconds,
                     exerciseName: exercise.exerciseName,
                   }}
-                  onDelete={() => openPopUp("delete-exercise", exercise)
-                  }
+                  onDelete={() => openPopUp("delete-exercise", exercise)}
                 />
               ))}
-              {workout?.workoutExercises?.length === 0 && <p>Este treino ainda não possui exercícios.</p>}
+              {workout?.workoutExercises?.length === 0 && (
+                <p>Este treino ainda não possui exercícios.</p>
+              )}
             </div>
 
-            <button type="button" className="add-exercise-btn" onClick={() => openPopUp("add-exercise")}>
+            <button
+              type="button"
+              className="add-exercise-btn"
+              onClick={() => openPopUp("add-exercise")}
+            >
               + Adicionar exercício
             </button>
 
-            <div className="form-buttons"> 
-              <Button type="submit" class="save-btn" >Salvar alterações</Button>
-              <Button type="button" className="delete-workout-btn" onClick={() => openPopUp("delete-workout")}>
+            <div className="form-buttons">
+              <Button type="submit" class="save-btn">
+                Salvar alterações
+              </Button>
+              <Button
+                type="button"
+                className="delete-workout-btn"
+                onClick={() => openPopUp("delete-workout")}
+              >
                 Excluir treino inteiro
               </Button>
             </div>
-            
+
             <Modal
               isOpen={modal === "add-exercise"}
               onClose={closePopUp}
@@ -209,19 +242,76 @@ function EditWorkoutPage() {
             >
               <div className="popup-add-content">
                 <h2 id="add-exercise-title">Adicionar exercício</h2>
-                <label htmlFor="exerciseId">Exercício
-                  <select id="exerciseId" name="exerciseId" value={exerciseForm.exerciseId} onChange={handleExerciseFormChange} required>
-                    {exercises.map((exercise) => <option key={exercise.id} value={exercise.id}>{exercise.name}</option>)}
+                <label htmlFor="exerciseId">
+                  Exercício
+                  <select
+                    id="exerciseId"
+                    name="exerciseId"
+                    value={exerciseForm.exerciseId}
+                    onChange={handleExerciseFormChange}
+                    required
+                  >
+                    {exercises.map((exercise) => (
+                      <option key={exercise.id} value={exercise.id}>
+                        {exercise.name}
+                      </option>
+                    ))}
                   </select>
                 </label>
                 <div className="exercise-form-grid">
-                  <label>Séries<input type="number" name="sets" min="1" max="1000" value={exerciseForm.sets} onChange={handleExerciseFormChange} required /></label>
-                  <label>Repetições<input type="number" name="reps" min="1" max="1000" value={exerciseForm.reps} onChange={handleExerciseFormChange} required /></label>
+                  <label>
+                    Séries
+                    <input
+                      type="number"
+                      name="sets"
+                      min="1"
+                      max="1000"
+                      value={exerciseForm.sets}
+                      onChange={handleExerciseFormChange}
+                      required
+                    />
+                  </label>
+                  <label>
+                    Repetições
+                    <input
+                      type="number"
+                      name="reps"
+                      min="1"
+                      max="1000"
+                      value={exerciseForm.reps}
+                      onChange={handleExerciseFormChange}
+                      required
+                    />
+                  </label>
                 </div>
-                <label>Descanso (segundos)<input type="number" name="restTimeSeconds" min="0" max="3600" value={exerciseForm.restTimeSeconds} onChange={handleExerciseFormChange} required /></label>
+                <label>
+                  Descanso (segundos)
+                  <input
+                    type="number"
+                    name="restTimeSeconds"
+                    min="0"
+                    max="3600"
+                    value={exerciseForm.restTimeSeconds}
+                    onChange={handleExerciseFormChange}
+                    required
+                  />
+                </label>
                 <div className="popup-add-buttons">
-                  <button type="button" className="popup-add-button" onClick={closePopUp}>Cancelar</button>
-                  <button type="button" className="popup-add-button popup-add-button--primary" onClick={handleAddExercise} disabled={isAddingExercise}>{isAddingExercise ? "Adicionando..." : "Adicionar"}</button>
+                  <button
+                    type="button"
+                    className="popup-add-button"
+                    onClick={closePopUp}
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="button"
+                    className="popup-add-button popup-add-button--primary"
+                    onClick={handleAddExercise}
+                    disabled={isAddingExercise}
+                  >
+                    {isAddingExercise ? "Adicionando..." : "Adicionar"}
+                  </button>
                 </div>
               </div>
             </Modal>
@@ -235,13 +325,29 @@ function EditWorkoutPage() {
               contentClassName="popup-delete"
             >
               <div className="popup-delete-content">
-                <h2 id="delete-workout-title">Deseja excluir esse exercicio?</h2>
-                <p >{selectedExercise?.tempId 
-                  ? "Se sim, clique em deletar. (Exercício não salvo, apenas removido da lista)" : "Se sim, clique em deletar."
-                  }</p>
+                <h2 id="delete-workout-title">
+                  Deseja excluir este exercício?
+                </h2>
+                <p>
+                  {selectedExercise?.tempId
+                    ? "Esta ação removerá o exercício da lista, mas ele ainda não foi salvo."
+                    : "Esta ação não pode ser desfeita."}
+                </p>
                 <div className="popup-delete-buttons">
-                  <button type="button" className="popup-delete-button" onClick={closePopUp}>Cancelar</button>
-                  <button type="button" className="popup-delete-button popup-delete-button--primary" onClick={handleDeleteExercise}>Deletar</button>
+                  <button
+                    type="button"
+                    className="popup-delete-button"
+                    onClick={closePopUp}
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="button"
+                    className="popup-delete-button popup-delete-button--primary"
+                    onClick={handleDeleteExercise}
+                  >
+                    Excluir
+                  </button>
                 </div>
               </div>
             </Modal>
@@ -256,13 +362,25 @@ function EditWorkoutPage() {
             >
               <div className="popup-delete-content">
                 <h2 id="delete-workout-title">Deseja excluir esse treino?</h2>
-                <p>Não terá mais volta.</p>
+                <p>Esta ação não pode ser desfeita.</p>
                 <div className="popup-delete-buttons">
-                  <button type="button" className="popup-delete-button" onClick={closePopUp}>Cancelar</button>
-                  <button type="button" className="popup-delete-button popup-delete-button--primary" onClick={handleDeleteWorkout}>Deletar</button>
+                  <button
+                    type="button"
+                    className="popup-delete-button"
+                    onClick={closePopUp}
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="button"
+                    className="popup-delete-button popup-delete-button--primary"
+                    onClick={handleDeleteWorkout}
+                  >
+                    Excluir
+                  </button>
                 </div>
               </div>
-            </Modal>           
+            </Modal>
           </form>
         )}
       </div>

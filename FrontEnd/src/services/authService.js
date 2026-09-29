@@ -8,7 +8,7 @@ async function request(path, body) {
   });
 
   if (!res.ok) {
-    let message = res.statusText;
+    let message = "Não foi possível concluir a solicitação.";
 
     try {
       const data = await res.json();
@@ -36,7 +36,6 @@ export async function register(name, email, password) {
 export function getUserId() {
   const token = localStorage.getItem("token");
   if (!token) return null;
-
 
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));

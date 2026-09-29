@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5011"; 
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5011";
 
 async function request(path, options = {}) {
   const token = localStorage.getItem("token");
@@ -12,7 +12,7 @@ async function request(path, options = {}) {
   });
 
   if (!response.ok) {
-    let message = response.statusText;
+    let message = "Não foi possível concluir a solicitação.";
 
     try {
       const data = await response.json();
@@ -30,7 +30,7 @@ async function request(path, options = {}) {
 function isAdmin() {
   const token = localStorage.getItem("token");
 
-  if (!token) return false
+  if (!token) return false;
 
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
@@ -44,11 +44,16 @@ function isAdmin() {
   }
 }
 
-
 export function create(workoutId, exerciseId, sets, reps, restTimeSeconds) {
   return request("/WorkoutExercises", {
     method: "POST",
-    body: JSON.stringify({ workoutId, exerciseId, sets, reps, restTimeSeconds }),
+    body: JSON.stringify({
+      workoutId,
+      exerciseId,
+      sets,
+      reps,
+      restTimeSeconds,
+    }),
   });
 }
 

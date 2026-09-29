@@ -31,7 +31,6 @@ function ProfilePage() {
   };
 
   const closePopUp = () => {
-    
     setModal(null);
   };
 
@@ -153,7 +152,7 @@ function ProfilePage() {
               <div className="profile-card__info-block profile-card__info-block--email">
                 <div className="profile-card__info-row">
                   <Mail size={15} color="rgb(107, 107, 107)" />
-                  <p>Email</p>
+                  <p>E-mail</p>
                 </div>
                 <p className="profile-card__value">{user.email}</p>
               </div>
@@ -180,30 +179,30 @@ function ProfilePage() {
             <Modal isOpen={modal === "edit-info"} onClose={closePopUp}>
               <div className="popup-editinfo-content">
                 <div className="header-popup">
-                  <h2>Edit your information</h2>
+                  <h2>Editar suas informações</h2>
                 </div>
                 <div className="popup-form-change">
-                  <Input type="text" id="name" placeholder="Your name" />
-                  <Input type="email" id="email" placeholder="Your email" />
+                  <Input type="text" id="name" placeholder="Seu nome" />
+                  <Input type="email" id="email" placeholder="Seu e-mail" />
                 </div>
                 <div className="popup-buttons">
                   <button className="popup-cancel-button" onClick={closePopUp}>
-                    Cancel
+                    Cancelar
                   </button>
-                  <button className="popup-save-button">Save</button>
+                  <button className="popup-save-button">Salvar</button>
                 </div>
               </div>
             </Modal>
             <Modal isOpen={modal === "change-password"} onClose={closePopUp}>
               <div className="popup-changepass-content">
                 <div className="header-popup">
-                  <h2>Change your password</h2>
+                  <h2>Alterar sua senha</h2>
                 </div>
                 <div className="popup-form-change">
                   <Input
                     type="password"
                     id="current-password"
-                    placeholder="Your current password"
+                    placeholder="Sua senha atual"
                     value={form.currentPassword}
                     onChange={(e) =>
                       setForm({ ...form, currentPassword: e.target.value })
@@ -212,7 +211,7 @@ function ProfilePage() {
                   <Input
                     type="password"
                     id="new-password"
-                    placeholder="Type your new password"
+                    placeholder="Digite sua nova senha"
                     value={form.newPassword}
                     onChange={(e) =>
                       setForm({ ...form, newPassword: e.target.value })
@@ -222,7 +221,7 @@ function ProfilePage() {
                   <Input
                     type="password"
                     id="confirm-password"
-                    placeholder="Confirm your password"
+                    placeholder="Confirme sua senha"
                     value={form.confirmPassword}
                     onChange={(e) =>
                       setForm({ ...form, confirmPassword: e.target.value })
@@ -259,13 +258,13 @@ function ProfilePage() {
                 </div>
                 <div className="popup-buttons">
                   <button className="popup-cancel-button" onClick={closePopUp}>
-                    Cancel
+                    Cancelar
                   </button>
                   <button
                     className="popup-change-button"
                     onClick={handleChangePassword}
                   >
-                    Change
+                    Alterar
                   </button>
                 </div>
               </div>

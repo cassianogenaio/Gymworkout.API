@@ -39,7 +39,9 @@ function RegisterPage() {
       navigate("/home");
     } catch (err) {
       console.error("Register error:", err);
-      setError(err.message || "Registration failed. Please try again.");
+      setError(
+        err.message || "Não foi possível criar sua conta. Tente novamente.",
+      );
     }
   };
 
@@ -47,13 +49,13 @@ function RegisterPage() {
     <div className="register-page">
       <div className="register-container">
         <form onSubmit={handleRegister}>
-          <h1 className="Title-register">Register</h1>
+          <h1 className="Title-register">Criar conta</h1>
           <div className="input-group">
             <div className="input-box">
               <Input
                 type="text"
                 id="name"
-                placeholder="Full Name"
+                placeholder="Nome completo"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
@@ -62,7 +64,7 @@ function RegisterPage() {
               <Input
                 type="email"
                 id="email"
-                placeholder="Email"
+                placeholder="E-mail"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -71,7 +73,7 @@ function RegisterPage() {
               <Input
                 type="password"
                 id="password"
-                placeholder="Password"
+                placeholder="Senha"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -80,7 +82,7 @@ function RegisterPage() {
               <Input
                 type="password"
                 id="confirm-password"
-                placeholder="Confirm Password"
+                placeholder="Confirme sua senha"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
@@ -88,11 +90,11 @@ function RegisterPage() {
           </div>
           {error && <p className="form-error">{error}</p>}
           <Button type="submit" className="btn-register">
-            Register
+            Cadastrar
           </Button>
           <div className="login-link">
-            <span>Already have an account?</span>
-            <Link to="/login">Login</Link>
+            <span>Já tem uma conta?</span>
+            <Link to="/login">Entrar</Link>
           </div>
         </form>
       </div>
