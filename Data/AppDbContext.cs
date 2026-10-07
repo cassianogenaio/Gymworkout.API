@@ -18,6 +18,8 @@ public class AppDbContext : DbContext
 
     public DbSet<WorkoutExercise> WorkoutExercises { get; set; } = null!;
 
+    public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -32,6 +34,21 @@ public class AppDbContext : DbContext
             builder.Property(u => u.Name)
                 .IsRequired()
                 .HasMaxLength(256);
+        });
+
+        modelBuilder.Entity<RefreshToken>(builder =>
+        {
+            builder.Property(token => token.TokenHash)
+                .IsRequired()
+                .HasMaxLength(64);
+
+            builder.HasIndex(token => token.TokenHash)
+                .IsUnique();
+
+            builder.HasOne(token => token.User)
+                .WithMany(user => user.RefreshTokens)
+                .HasForeignKey(token => token.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

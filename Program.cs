@@ -4,16 +4,9 @@ using Microsoft.Extensions.FileProviders;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddApiConfig();
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("DevCors", policy =>
-    {
-        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-    });
-});
 
 var app = builder.Build();
-app.UseCors("DevCors");
+app.UseCors("AppCors");
 
 if (app.Environment.IsDevelopment())
 {

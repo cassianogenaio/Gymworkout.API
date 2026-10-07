@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./RegisterPage.css";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "../../components/Input/Input";
@@ -29,16 +29,13 @@ function RegisterPage() {
 
     try {
       const token = await authService.register(name, email, password);
-      console.log("Registration successful. Token:", token);
 
       if (token) {
-        console.log("Storing token in localStorage:", token);
         localStorage.setItem("token", token);
       }
 
       navigate("/home");
     } catch (err) {
-      console.error("Register error:", err);
       setError(
         err.message || "Não foi possível criar sua conta. Tente novamente.",
       );

@@ -1,30 +1,7 @@
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5011";
+import { apiRequest } from "./apiClient";
 
 async function request(path, options = {}) {
-  const token = localStorage.getItem("token");
-  const response = await fetch(`${API_BASE}${path}`, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...options.headers,
-    },
-  });
-
-  if (!response.ok) {
-    let message = "Não foi possível concluir a solicitação.";
-
-    try {
-      const data = await response.json();
-      message = data?.erro || data?.message || message;
-    } catch {
-      // A resposta sem JSON mantém o statusText.
-    }
-
-    throw new Error(message);
-  }
-
-  return response.status === 204 ? null : response.json();
+  return apiRequest(path, options);
 }
 
 export function getAll() {

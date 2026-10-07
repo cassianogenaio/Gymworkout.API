@@ -1,26 +1,10 @@
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5011";
+import { apiRequest } from "./apiClient";
 
 async function request(path, body) {
-  const res = await fetch(`${API_BASE}${path}`, {
+  return apiRequest(path, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-
-  if (!res.ok) {
-    let message = "Não foi possível concluir a solicitação.";
-
-    try {
-      const data = await res.json();
-      message = data?.erro || data?.message || message;
-    } catch {
-      // resposta não era JSON válido, mantém o statusText
-    }
-
-    throw new Error(message);
-  }
-
-  return res.json();
 }
 
 export async function login(email, password) {
@@ -31,6 +15,14 @@ export async function login(email, password) {
 export async function register(name, email, password) {
   const data = await request("/Auth/register", { name, email, password });
   return data?.Token ?? data?.token;
+}
+
+export async function logout() {
+  try {
+    await request("/Auth/logout", {});
+  } finally {
+    localStorage.removeItem("token");
+  }
 }
 
 export function getUserId() {
@@ -45,4 +37,4 @@ export function getUserId() {
   }
 }
 
-export default { login, register, getUserId };
+export default { login, register, logout, getUserId };

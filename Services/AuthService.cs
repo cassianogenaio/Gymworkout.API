@@ -4,18 +4,77 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using GymWorkout.API.DTOs.User;
+using GymWorkout.API.Data;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 namespace GymWorkout.API.Services;
 
 public class AuthService
 {   
     private readonly UserService _userService;
+    private readonly AppDbContext _context;
     private readonly IConfiguration _configuration;
 
-    public AuthService(UserService userService, IConfiguration configuration)
+    public AuthService(UserService userService, AppDbContext context, IConfiguration configuration)
     {
         _userService = userService;
+        _context = context;
         _configuration = configuration;
+    }
+
+    public async Task<AuthSession> CreateSessionAsync(User user)
+    {
+        var refreshToken = GenerateRefreshToken();
+        _context.RefreshTokens.Add(new RefreshToken
+        {
+            UserId = user.Id,
+            TokenHash = HashRefreshToken(refreshToken),
+            ExpiresAt = DateTime.UtcNow.AddDays(GetRefreshTokenExpirationDays())
+        });
+        await _context.SaveChangesAsync();
+
+        return new AuthSession(user, GenerateToken(user), refreshToken);
+    }
+
+    public async Task<AuthSession?> RefreshSessionAsync(string refreshToken)
+    {
+        var tokenHash = HashRefreshToken(refreshToken);
+        var existingToken = await _context.RefreshTokens
+            .Include(token => token.User)
+            .FirstOrDefaultAsync(token => token.TokenHash == tokenHash);
+
+        if (existingToken == null || existingToken.RevokedAt != null || existingToken.ExpiresAt <= DateTime.UtcNow)
+        {
+            return null;
+        }
+
+        existingToken.RevokedAt = DateTime.UtcNow;
+        var replacementToken = GenerateRefreshToken();
+        _context.RefreshTokens.Add(new RefreshToken
+        {
+            UserId = existingToken.UserId,
+            TokenHash = HashRefreshToken(replacementToken),
+            ExpiresAt = DateTime.UtcNow.AddDays(GetRefreshTokenExpirationDays())
+        });
+        await _context.SaveChangesAsync();
+
+        return new AuthSession(existingToken.User, GenerateToken(existingToken.User), replacementToken);
+    }
+
+    public async Task RevokeRefreshTokenAsync(string refreshToken)
+    {
+        var tokenHash = HashRefreshToken(refreshToken);
+        var token = await _context.RefreshTokens
+            .FirstOrDefaultAsync(candidate => candidate.TokenHash == tokenHash && candidate.RevokedAt == null);
+
+        if (token == null)
+        {
+            return;
+        }
+
+        token.RevokedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
     }
 
     public async Task<User?> RegisterAsync(CreateUserDto dto)
@@ -88,5 +147,22 @@ public class AuthService
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
+
+    private static string GenerateRefreshToken()
+    {
+        return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+    }
+
+    private static string HashRefreshToken(string refreshToken)
+    {
+        return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(refreshToken)));
+    }
+
+    private int GetRefreshTokenExpirationDays()
+    {
+        return _configuration.GetValue<int?>("Jwt:RefreshTokenExpirationDays") ?? 7;
+    }
 }
+
+public sealed record AuthSession(User User, string AccessToken, string RefreshToken);
 

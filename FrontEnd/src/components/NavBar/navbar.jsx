@@ -1,15 +1,19 @@
 import "./navbar.css";
 import Button from "../../components/Button/Button";
 import { UserRound, LogOut } from "lucide-react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import * as authService from "../../services/authService";
 
 function NavBar() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  function handleLogout() {
-    localStorage.removeItem("token");
-    navigate("/login", { replace: true });
+  async function handleLogout() {
+    try {
+      await authService.logout();
+    } finally {
+      navigate("/login", { replace: true });
+    }
   }
 
   return (

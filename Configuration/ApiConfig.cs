@@ -1,6 +1,7 @@
 using GymWorkout.API.Data;
 using GymWorkout.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -10,8 +11,37 @@ namespace GymWorkout.API.Configuration
 {
     public static class ApiConfig
     {
+        public static IServiceCollection WebApiConfig(this IServiceCollection services)
+        {
+            services.AddControllers();
+
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
+
+            return services;
+        }
+
         public static WebApplicationBuilder AddApiConfig(this WebApplicationBuilder builder)
         {
+            var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+            if (allowedOrigins is null && builder.Environment.IsDevelopment())
+            {
+                allowedOrigins = new[] { "http://localhost:5173" };
+            }
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AppCors", policy =>
+                {
+                    policy.WithOrigins(allowedOrigins ?? Array.Empty<string>())
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
+            });
+
             builder.Services.AddControllersConfiguration();
             builder.Services.AddSwaggerConfiguration();
             builder.Services.AddDatabaseConfiguration(builder.Configuration);
@@ -90,6 +120,7 @@ namespace GymWorkout.API.Configuration
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
+                    ValidateLifetime = true,
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(configuration["Jwt:SecretKey"]!)
                     ),
