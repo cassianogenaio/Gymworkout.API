@@ -1,6 +1,63 @@
-@GymWorkout.API_HostAddress = http://localhost:5011
+@baseUrl = http://localhost:5011
+@email = seu-email@exemplo.com
+@password = sua-senha
+@workoutId = 1
+@exerciseId = 1
 
-GET {{GymWorkout.API_HostAddress}}/weatherforecast/
+### Entrar e receber um token JWT
+# Execute este request antes dos requests protegidos.
+# O REST Client salva o cookie HttpOnly para os requests de refresh/logout.
+# @name login
+POST {{baseUrl}}/Auth/login
+Content-Type: application/json
+
+{
+	"email": "{{email}}",
+	"password": "{{password}}"
+}
+
+### Renovar a sessão usando o cookie de refresh
+POST {{baseUrl}}/Auth/refresh
+
+### Consultar os treinos do usuário autenticado
+GET {{baseUrl}}/Workouts
+Authorization: Bearer {{login.response.body.$.Token}}
 Accept: application/json
 
-###
+### Consultar o catálogo de exercícios
+GET {{baseUrl}}/Exercises
+Authorization: Bearer {{login.response.body.$.Token}}
+Accept: application/json
+
+### Consultar exercícios adicionados aos treinos do usuário
+GET {{baseUrl}}/WorkoutExercises
+Authorization: Bearer {{login.response.body.$.Token}}
+Accept: application/json
+
+### Criar um treino para o usuário autenticado
+# O servidor associa o treino ao usuário do token; UserId é ignorado pelo controller.
+POST {{baseUrl}}/Workouts
+Authorization: Bearer {{login.response.body.$.Token}}
+Content-Type: application/json
+
+{
+	"name": "Treino A",
+	"userId": 1
+}
+
+### Adicionar um exercício ao treino
+# Troque os IDs por um treino seu e um exercício existente.
+POST {{baseUrl}}/WorkoutExercises
+Authorization: Bearer {{login.response.body.$.Token}}
+Content-Type: application/json
+
+{
+	"workoutId": {{workoutId}},
+	"exerciseId": {{exerciseId}},
+	"sets": 4,
+	"reps": 10,
+	"restTimeSeconds": 90
+}
+
+### Sair e revogar o refresh token
+POST {{baseUrl}}/Auth/logout
